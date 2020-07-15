@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { MdEmail, MdLock, MdLastPage } from 'react-icons/md';
 import { Form, FormikProps, Formik } from 'formik';
 import * as Yup from 'yup';
@@ -7,6 +7,8 @@ import { Container, Content, Background } from './styles';
 import logo from '../../assets/logo.svg';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
+import api from '../../services/api';
+import { useAuth } from '../../hooks/AuthContext';
 
 interface Values {
   email: string;
@@ -28,10 +30,18 @@ const Login: React.FC = () => {
     password: '',
   });
 
-  function handleSubmit(values: Values) {
-    console.log(values);
+  const { user, signIn } = useAuth();
+
+  async function handleSubmit(values: Values) {
+    try {
+      const { email, password } = values;
+      await signIn({ email, password });
+    } catch (error) {
+      console.log('error');
+    }
   }
 
+  console.log(user);
   return (
     <Container>
       <Content>
