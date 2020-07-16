@@ -2,6 +2,8 @@ import React, { useState, useContext } from 'react';
 import { MdEmail, MdLock, MdLastPage } from 'react-icons/md';
 import { Form, FormikProps, Formik } from 'formik';
 import * as Yup from 'yup';
+import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 
 import { Container, Content, Background } from './styles';
 import logo from '../../assets/logo.svg';
@@ -24,7 +26,7 @@ const validationSchema = Yup.object().shape({
     .min(6, 'No mínimo 6 caractéries'),
 });
 
-const Login: React.FC = () => {
+const SignIn: React.FC = () => {
   const [initialValues, setInitialValues] = useState({
     email: '',
     password: '',
@@ -36,12 +38,12 @@ const Login: React.FC = () => {
     try {
       const { email, password } = values;
       await signIn({ email, password });
-    } catch (error) {
-      console.log('error');
+    } catch (err) {
+      const error = err.response.data.message;
+      toast.error(error);
     }
   }
 
-  console.log(user);
   return (
     <Container>
       <Content>
@@ -71,14 +73,14 @@ const Login: React.FC = () => {
           )}
         </Formik>
 
-        <button type="button">
+        <Link to="/register">
           <MdLastPage color="#FF9000" size={16} />
           Criar Conta
-        </button>
+        </Link>
       </Content>
       <Background />
     </Container>
   );
 };
 
-export default Login;
+export default SignIn;

@@ -1,7 +1,9 @@
 import React from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { BrowserRouter } from 'react-router-dom';
 
-import SignUp from './pages/SignUp';
-import Login from './pages/Login';
+import Routes from './routes';
 import GlobalStyles from './styles/global';
 
 import { AuthProvider } from './hooks/AuthContext';
@@ -10,9 +12,12 @@ const App: React.FC = () => {
   return (
     <>
       <AuthProvider>
-        <Login />
+        <BrowserRouter>
+          <Routes />
+        </BrowserRouter>
       </AuthProvider>
       <GlobalStyles />
+      <ToastContainer autoClose={3000} />
     </>
   );
 };

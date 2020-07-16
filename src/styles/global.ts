@@ -21,4 +21,16 @@ export default createGlobalStyle`
   button {
     cursor: pointer;
   }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active  {
+    -webkit-box-shadow: 0 0 0 30px #232129 inset !important;
+  }
+
+  input:-webkit-autofill {
+    -webkit-text-fill-color: #666360 !important;
+  }
+
 `;

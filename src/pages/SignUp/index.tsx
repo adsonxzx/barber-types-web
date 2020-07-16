@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { MdKeyboardArrowLeft, MdEmail, MdLock, MdPerson } from 'react-icons/md';
-import { useField, Form, FormikProps, Formik } from 'formik';
+import { Form, FormikProps, Formik } from 'formik';
 import * as Yup from 'yup';
+import { Link } from 'react-router-dom';
 
+import { toast } from 'react-toastify';
 import { Container, Content, Background } from './styles';
 import logo from '../../assets/logo.svg';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
+import api from '../../services/api';
 
 interface Values {
   name: string;
@@ -31,8 +34,17 @@ const SignUp: React.FC = () => {
     password: '',
   });
 
-  function handleSubmit(values: Values) {
-    console.log(values);
+  async function handleSubmit(values: Values) {
+    try {
+      const { name, email, password } = values;
+      await api.post('/users', { name, email, password });
+
+      toast.success('Usuário cadastrado com sucesso');
+    } catch (err) {
+      const error = err.response.data.message;
+
+      toast.error(error);
+    }
   }
 
   return (
@@ -67,10 +79,10 @@ const SignUp: React.FC = () => {
           )}
         </Formik>
 
-        <button type="button">
+        <Link to="/">
           <MdKeyboardArrowLeft color="#fff" size={16} />
           Voltar para Login
-        </button>
+        </Link>
       </Content>
     </Container>
   );

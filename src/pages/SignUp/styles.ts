@@ -41,7 +41,7 @@ export const Content = styled.div`
     }
   }
 
-  > button {
+  > a {
     font-size: 16px;
     display: flex;
     justify-content: center;
@@ -50,6 +50,7 @@ export const Content = styled.div`
     background: none;
     border: none;
     color: #fff;
+    text-decoration: none;
     &:hover {
       text-decoration: underline;
     }
