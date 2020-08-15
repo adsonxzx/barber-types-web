@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, Redirect, RouteProps } from 'react-router-dom';
 import { useAuth } from '../hooks/AuthContext';
+import Header from '../components/Header/index';
 
 interface Props extends RouteProps {
   isPrivate?: boolean;
@@ -19,7 +20,10 @@ const RouteWrapper: React.FC<Props> = ({
       {...rest}
       render={({ location }) => {
         return isPrivate === !!user ? (
-          <Component />
+          <>
+            <Header />
+            <Component />
+          </>
         ) : (
           <Redirect
             to={{

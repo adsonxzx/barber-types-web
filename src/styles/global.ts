@@ -10,7 +10,6 @@ export default createGlobalStyle`
   }
 
   body {
-    background: #312e38;
     -webkit-font-smoothing: antialiased
   }
 
@@ -33,4 +32,7 @@ export default createGlobalStyle`
     -webkit-text-fill-color: #666360 !important;
   }
 
+  ul {
+    list-style: none;
+  }
 `;
