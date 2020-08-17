@@ -7,15 +7,14 @@ interface Props {
 }
 
 export const Container = styled.div<Props>`
-  height: 56px;
-  border-radius: 10px;
-  background: #232129;
+  height: 45px;
+  border-radius: 7px;
   color: #666360;
   display: flex;
   align-items: center;
   padding: 0 18px;
-  margin-bottom: 8px;
-  border: 2px solid #232129;
+  margin-bottom: 20px;
+  border: 2px solid #F4F4F4;
 
   ${props =>
     props.isFocused &&
@@ -51,7 +50,7 @@ export const Container = styled.div<Props>`
     margin-left: 18px;
     margin-right: 10px;
     color: #666360;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   span {

@@ -52,8 +52,6 @@ const SignUp: React.FC = () => {
       <Background />
 
       <Content>
-        <img src={logo} alt="" />
-
         <Formik
           validationSchema={validationSchema}
           initialValues={initialValues}
@@ -63,15 +61,22 @@ const SignUp: React.FC = () => {
             <Form>
               <h3>Faça seu Cadastro</h3>
 
+              <label>Nome</label>
               <Input icon={MdPerson} name="name" placeholder="Nome" />
 
-              <Input icon={MdEmail} name="email" placeholder="E-mail" />
+              <label>Email</label>
+              <Input
+                icon={MdEmail}
+                name="email"
+                placeholder="exemple@gmail.com"
+              />
 
+              <label>Senha</label>
               <Input
                 icon={MdLock}
                 name="password"
                 type="password"
-                placeholder="Senha"
+                placeholder="*******"
               />
 
               <Button type="submit">Cadastrar</Button>
@@ -80,7 +85,7 @@ const SignUp: React.FC = () => {
         </Formik>
 
         <Link to="/">
-          <MdKeyboardArrowLeft color="#fff" size={16} />
+          <MdKeyboardArrowLeft color="#ff9000" size={16} />
           Voltar para Login
         </Link>
       </Content>

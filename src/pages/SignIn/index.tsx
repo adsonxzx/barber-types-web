@@ -47,8 +47,6 @@ const SignIn: React.FC = () => {
   return (
     <Container>
       <Content>
-        <img src={logo} alt="" />
-
         <Formik
           initialValues={initialValues}
           onSubmit={handleSubmit}
@@ -58,13 +56,20 @@ const SignIn: React.FC = () => {
             <Form>
               <h3>Faça seu login</h3>
 
-              <Input icon={MdEmail} name="email" placeholder="E-mail" />
+              <label htmlFor="email">Email</label>
+              <Input
+                id="email"
+                icon={MdEmail}
+                name="email"
+                placeholder="exemple@gmail.com"
+              />
 
+              <label>Senha</label>
               <Input
                 icon={MdLock}
                 name="password"
                 type="password"
-                placeholder="Senha"
+                placeholder="******"
               />
 
               <Button type="submit">Entrar</Button>

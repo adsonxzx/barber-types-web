@@ -25,7 +25,7 @@ export default createGlobalStyle`
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,
   input:-webkit-autofill:active  {
-    -webkit-box-shadow: 0 0 0 30px #232129 inset !important;
+    -webkit-box-shadow: 0 0 0 30px #fff inset !important;
   }
 
   input:-webkit-autofill {
