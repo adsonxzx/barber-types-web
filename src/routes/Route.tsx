@@ -21,7 +21,7 @@ const RouteWrapper: React.FC<Props> = ({
       render={({ location }) => {
         return isPrivate === !!user ? (
           <>
-            {/* <Header /> */}
+            {isPrivate && <Header />}
             <Component />
           </>
         ) : (

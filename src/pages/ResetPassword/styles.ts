@@ -40,9 +40,7 @@ export const Content = styled.div`
       color: #959595;
     }
 
-    a {
-      display: block;
-      text-decoration: none;
+    button[type='button'] {
       margin-top: 24px;
       background: none;
       border: none;

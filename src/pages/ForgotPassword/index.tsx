@@ -6,40 +6,33 @@ import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 
 import { Container, Content, Background } from './styles';
-import logo from '../../assets/logo.svg';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import api from '../../services/api';
-import { useAuth } from '../../hooks/AuthContext';
 
 interface Values {
   email: string;
-  password: string;
 }
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
     .required('E-mail obrigatório')
     .email('E-mail deve ser válido'),
-  password: Yup.string()
-    .required('Password obrigatório')
-    .min(6, 'No mínimo 6 caractéries'),
 });
 
-const SignIn: React.FC = () => {
+const ForgotPassword: React.FC = () => {
   const [initialValues, setInitialValues] = useState({
     email: '',
-    password: '',
   });
   const [loading, setLoading] = useState(false);
-
-  const { user, signIn } = useAuth();
 
   async function handleSubmit(values: Values) {
     try {
       setLoading(true);
-      const { email, password } = values;
-      await signIn({ email, password });
+      const { email } = values;
+
+      await api.post('/passwords/forgot', { email });
+      toast.success('Email de recuperação enviado');
     } catch (err) {
       const error = err.response.data.message;
       toast.error(error);
@@ -58,7 +51,7 @@ const SignIn: React.FC = () => {
         >
           {(props: FormikProps<Values>) => (
             <Form>
-              <h3>Faça seu login</h3>
+              <h3>Resentar Senha</h3>
 
               <label htmlFor="email">Email</label>
               <Input
@@ -68,25 +61,16 @@ const SignIn: React.FC = () => {
                 placeholder="exemple@gmail.com"
               />
 
-              <label>Senha</label>
-              <Input
-                icon={MdLock}
-                name="password"
-                type="password"
-                placeholder="******"
-              />
-
               <Button loading={loading} type="submit">
-                Entrar
+                Enviar
               </Button>
-              <Link to="/passwords/forgot">Esqueci minha senha</Link>
             </Form>
           )}
         </Formik>
 
-        <Link to="/register">
+        <Link to="/">
           <MdLastPage color="#FF9000" size={16} />
-          Criar Conta
+          Login
         </Link>
       </Content>
       <Background />
@@ -94,4 +78,4 @@ const SignIn: React.FC = () => {
   );
 };
 
-export default SignIn;
+export default ForgotPassword;

@@ -11,4 +11,8 @@ export const Container = styled.button`
   margin-top: 30px;
   font-size: 16px;
   font-weight: 500;
+
+  img {
+    width: 35px;
+  }
 `;
