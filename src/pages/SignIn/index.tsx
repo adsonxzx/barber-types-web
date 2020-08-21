@@ -6,7 +6,6 @@ import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 
 import { Container, Content, Background } from './styles';
-import logo from '../../assets/logo.svg';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import api from '../../services/api';

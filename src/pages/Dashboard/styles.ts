@@ -1,6 +1,13 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { motion } from 'framer-motion';
 import { colorGrayLight, colorBlack } from '../../styles/colors';
+
+interface IAppointment {
+  appointment?: boolean;
+  isCurrent: boolean;
+  isFuture: boolean;
+  available?: boolean | undefined;
+}
 
 export const Container = styled.main`
   max-width: 1200px;
@@ -173,77 +180,126 @@ export const Appointments = styled(motion.div)`
     border-top: 2px solid ${colorGrayLight};
     padding-top: 15px;
     cursor: grab;
+  }
+`;
 
-    li {
+export const Appointment = styled.li<IAppointment>`
+  display: flex;
+  align-items: center;
+  height: 70px;
+  margin: 20px 0;
+  position: relative;
+
+  &:before {
+    content: '';
+    width: 100%;
+    height: 2px;
+    background: ${colorGrayLight};
+    position: absolute;
+    left: 60px;
+  }
+
+  > span {
+    margin-right: 40px;
+    color: #ababab;
+  }
+
+  > div {
+    flex: 1;
+    position: relative;
+    background: #eff0f2;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 7px;
+    padding: 10px 15px;
+
+    .left {
+      height: 100%;
+      display: flex;
+
+      strong {
+        font-size: 15px;
+        margin-bottom: 2px;
+        display: block;
+      }
+
+      p {
+        font-size: 13px;
+        color: #97989a;
+      }
+    }
+
+    .right {
       display: flex;
       align-items: center;
-      height: 70px;
-      margin: 20px 0;
-      position: relative;
 
-      &.no {
-        height: 45px;
-        > div {
-          display: none;
-        }
+      svg {
+        cursor: pointer;
+        margin-left: 15px;
+      }
+    }
+  }
+
+  ${({ appointment, available }) =>
+    !appointment &&
+    css`
+      height: 45px;
+      text-decoration: ${available && 'line-through'};
+      > div {
+        display: none;
+      }
+    `}
+
+  ${({ isCurrent, appointment }) =>
+    isCurrent &&
+    css`
+      > div {
+        background: #dcf4ff;
+      }
+      > span {
+        color: #53c7fa;
       }
 
       &:before {
+        background: #dcf4ff;
+      }
+
+      &:after {
         content: '';
-        width: 100%;
-        height: 2px;
-        background: ${colorGrayLight};
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #4ccffb;
         position: absolute;
-        left: 60px;
+        left: 50px;
+        animation: ${appointment && 'pulse 2s infinite'};
       }
+    `}
 
-      > span {
-        margin-right: 40px;
-        color: #ababab;
-      }
-
-      > div {
-        flex: 1;
-        position: relative;
-        background: #eff0f2;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        border-radius: 7px;
-        padding: 10px 15px;
-
-        .left {
-          height: 100%;
-          display: flex;
-
-          strong {
-            font-size: 15px;
-            margin-bottom: 2px;
-            display: block;
-          }
-
-          p {
-            font-size: 13px;
-            color: #97989a;
-          }
+    ${({ isFuture }) =>
+      isFuture &&
+      css`
+        > div {
+          background: #fff1de;
         }
+      `}
 
-        .right {
-          display: flex;
-          align-items: center;
-
-          svg {
-            cursor: pointer;
-            margin-left: 15px;
-          }
-        }
-      }
+    @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(76, 207, 251, 0.4);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(76, 207, 251, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(76, 207, 251, 0);
     }
   }
 `;
 
-export const AvatarService = styled.div`
+export const AvatarService = styled.div<IAppointment>`
   background: #feffff;
   border-radius: 4px;
   display: flex;
@@ -252,6 +308,27 @@ export const AvatarService = styled.div`
   height: 100%;
   width: 60px;
   margin-right: 15px;
+  border: 2px solid #feffff;
+
+  ${({ isCurrent }) =>
+    isCurrent &&
+    css`
+      background: #53c7fa;
+      border-color: #55b6d7;
+      svg {
+        fill: #fff;
+      }
+    `}
+
+  ${({ isFuture }) =>
+    isFuture &&
+    css`
+      background: #f9d0a2;
+      border-color: #f4cf9a;
+      svg {
+        fill: #fff;
+      }
+    `}
 `;
 
 export const ClienteAvatar = styled.div`

@@ -1,6 +1,13 @@
-/* eslint-disable import/no-duplicates */
-import React, { useState, useEffect, useRef } from 'react';
-import { getDaysInMonth, setDate, format } from 'date-fns';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import {
+  getDaysInMonth,
+  setDate,
+  format,
+  getHours,
+  isAfter,
+  parseISO,
+  isToday,
+} from 'date-fns';
 import pt from 'date-fns/locale/pt';
 import { MdContentCut, MdMoreHoriz } from 'react-icons/md';
 import { motion } from 'framer-motion';
@@ -15,13 +22,28 @@ import {
   Appointments,
   AvatarService,
   ClienteAvatar,
+  Appointment,
 } from './styles';
 
 import providerAvatar from '../../assets/provider.jpg';
+import api from '../../services/api';
 
 interface IDaysOfMonth {
   number: number;
   day: string;
+}
+
+interface Appointment {
+  date: string;
+}
+
+interface ListAppoitment {
+  hour: number;
+  hourStart: string;
+  hourEnd: string;
+  isCurrent: boolean;
+  isFuture: boolean;
+  appointment: Appointment;
 }
 
 const Dashboard: React.FC = () => {
@@ -42,19 +64,12 @@ const Dashboard: React.FC = () => {
     'Dezembro',
   ]);
   const [dateSelected, setDateSelected] = useState(new Date());
+  const [currentDate, setCurrentDate] = useState(new Date());
   const [daysOfMonth, setDaysOfMonth] = useState<IDaysOfMonth[]>([]);
-  const [hoursOfDay, setHoursOfDay] = useState([
-    '08:00',
-    '09:00',
-    '10:00',
-    '11:00',
-    '12:00',
-    '13:00',
-    '14:00',
-    '15:00',
-    '16:00',
-    '17:00',
-  ]);
+  const [hoursOfDay, setHoursOfDay] = useState(() =>
+    Array.from({ length: 10 }, (_, index) => index + 8),
+  );
+  const [appointments, setAppointments] = useState<ListAppoitment[]>([]);
 
   useEffect(() => {
     const numberOfDaysInMonth = getDaysInMonth(new Date());
@@ -74,13 +89,49 @@ const Dashboard: React.FC = () => {
     setDaysOfMonth(nameOfDays);
   }, [dateSelected]);
 
+  useEffect(() => {
+    api
+      .get('/appointments/me', {
+        params: {
+          day: 19,
+          month: 8,
+          year: 2020,
+        },
+      })
+      .then(response => {
+        const appointmentsFormmated = hoursOfDay.map(hour => {
+          return {
+            hour,
+            hourStart: `${String(hour).padStart(2, '0')}:00`,
+            hourEnd: `${String(hour + 1).padStart(2, '0')}:00`,
+            isCurrent: getHours(currentDate) === hour,
+            isFuture: hour > getHours(currentDate),
+            appointment: response.data.find((appointment: Appointment) => {
+              return getHours(parseISO(appointment.date)) === hour;
+            }),
+          };
+        });
+
+        setAppointments(appointmentsFormmated);
+      });
+  }, [hoursOfDay, currentDate]);
+
+  const dateSeletedText = useMemo(() => {
+    const today = isToday(dateSelected) ? 'Hoje' : '';
+    const result = format(dateSelected, "dd 'de' MMMM", {
+      locale: pt,
+    });
+
+    return `${today} | ${result}`;
+  }, [dateSelected]);
+
   return (
     <Container>
       <Content>
         <ContentHeader>
           <div>
             <h1>Horários Agendados</h1>
-            <p>Hoje | Dia 06 | Segunda-Feira</p>
+            <p>{dateSeletedText}</p>
           </div>
 
           <button type="button">+ Criar</button>
@@ -109,34 +160,45 @@ const Dashboard: React.FC = () => {
 
         <Appointments ref={constraintsRef}>
           <motion.ul drag dragConstraints={constraintsRef}>
-            {hoursOfDay.map(appointment => (
-              <li
-                key={appointment}
-                className={`${appointment === '09:00' ? 'no' : ''}`}
-              >
-                <span>{appointment}</span>
-                <div>
-                  <div className="left">
-                    <AvatarService>
-                      <MdContentCut color="#B9B9B9" size={18} />
-                    </AvatarService>
+            {appointments.map(
+              ({
+                hourStart,
+                hourEnd,
+                appointment,
+                hour,
+                isCurrent,
+                isFuture,
+              }) => (
+                <Appointment
+                  appointment={!!appointment}
+                  key={hourStart}
+                  isCurrent={isCurrent}
+                  isFuture={isFuture}
+                >
+                  <span>{hourStart}</span>
+                  <div>
+                    <div className="left">
+                      <AvatarService isCurrent={isCurrent} isFuture={isFuture}>
+                        <MdContentCut color="#B9B9B9" size={18} />
+                      </AvatarService>
 
-                    <div>
-                      <strong>Corte cabelo</strong>
-                      <p>08:00 - 09:00</p>
+                      <div>
+                        <strong>Corte cabelo</strong>
+                        <p>{`${hourStart} - ${hourEnd}`}</p>
+                      </div>
+                    </div>
+
+                    <div className="right">
+                      <ClienteAvatar>
+                        <img src={providerAvatar} alt="cliente" />
+                      </ClienteAvatar>
+
+                      <MdMoreHoriz size={28} color="#97989a" />
                     </div>
                   </div>
-
-                  <div className="right">
-                    <ClienteAvatar>
-                      <img src={providerAvatar} alt="cliente" />
-                    </ClienteAvatar>
-
-                    <MdMoreHoriz size={28} color="#97989a" />
-                  </div>
-                </div>
-              </li>
-            ))}
+                </Appointment>
+              ),
+            )}
           </motion.ul>
         </Appointments>
       </Content>
