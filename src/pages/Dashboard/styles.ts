@@ -9,6 +9,14 @@ interface IAppointment {
   available?: boolean | undefined;
 }
 
+interface IMonth {
+  selected: boolean;
+}
+
+interface IDay {
+  selected: boolean;
+}
+
 export const Container = styled.main`
   max-width: 1200px;
   width: 100%;
@@ -86,18 +94,21 @@ export const CalendarMonth = styled.div`
     position: absolute;
     left: -182px;
     display: flex;
-    li {
-      font-size: 22px;
-      font-weight: 600;
-      margin: 0 25px;
-      cursor: pointer;
-      color: #ababab;
-
-      &.active {
-        color: ${colorBlack};
-      }
-    }
   }
+`;
+
+export const Month = styled.li<IMonth>`
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0 25px;
+  cursor: pointer;
+  color: #ababab;
+
+  ${({ selected }) =>
+    selected &&
+    css`
+      color: ${colorBlack};
+    `}
 `;
 
 export const CalendarDay = styled.div`
@@ -132,41 +143,43 @@ export const CalendarDay = styled.div`
 
   ul {
     display: flex;
-
-    li {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: 0 15px;
-      padding-bottom: 20px;
-
-      &.active {
-        border-bottom: 2px solid #b9b9b9;
-        strong {
-          background: ${colorBlack};
-          color: #fff;
-        }
-      }
-
-      strong {
-        margin-bottom: 7px;
-        font-weight: bold;
-        background: ${colorGrayLight};
-        width: 45px;
-        height: 45px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-      }
-
-      span {
-        font-size: 15px;
-        color: #c3c3c3;
-      }
-    }
   }
+`;
+
+export const Day = styled.li<IDay>`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 15px;
+  padding-bottom: 20px;
+
+  strong {
+    margin-bottom: 7px;
+    font-weight: bold;
+    background: ${colorGrayLight};
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  span {
+    font-size: 15px;
+    color: #c3c3c3;
+  }
+
+  ${({ selected }) =>
+    selected &&
+    css`
+      border-bottom: 2px solid #b9b9b9;
+      strong {
+        background: ${colorBlack};
+        color: #fff;
+      }
+    `}
 `;
 
 export const Appointments = styled(motion.div)`

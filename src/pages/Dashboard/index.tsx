@@ -1,9 +1,17 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+} from 'react';
 import {
   getDaysInMonth,
   setDate,
   format,
   getHours,
+  getDate,
+  getMonth,
   isAfter,
   parseISO,
   isToday,
@@ -12,13 +20,16 @@ import pt from 'date-fns/locale/pt';
 import { MdContentCut, MdMoreHoriz } from 'react-icons/md';
 import { motion } from 'framer-motion';
 
+import { toast } from 'react-toastify';
 import {
   Container,
   Content,
   SiderBar,
   ContentHeader,
   CalendarMonth,
+  Month,
   CalendarDay,
+  Day,
   Appointments,
   AvatarService,
   ClienteAvatar,
@@ -43,7 +54,12 @@ interface ListAppoitment {
   hourEnd: string;
   isCurrent: boolean;
   isFuture: boolean;
-  appointment: Appointment;
+  appointment: Appointment | undefined;
+}
+
+interface ISelectDate {
+  day?: number;
+  month?: number;
 }
 
 const Dashboard: React.FC = () => {
@@ -66,10 +82,15 @@ const Dashboard: React.FC = () => {
   const [dateSelected, setDateSelected] = useState(new Date());
   const [currentDate, setCurrentDate] = useState(new Date());
   const [daysOfMonth, setDaysOfMonth] = useState<IDaysOfMonth[]>([]);
+
   const [hoursOfDay, setHoursOfDay] = useState(() =>
     Array.from({ length: 10 }, (_, index) => index + 8),
   );
+
   const [appointments, setAppointments] = useState<ListAppoitment[]>([]);
+
+  const [daySelected, setDaySelected] = useState(getDate(new Date()));
+  const [monthSelected, setMonthSelected] = useState(getMonth(new Date()) + 1);
 
   useEffect(() => {
     const numberOfDaysInMonth = getDaysInMonth(new Date());
@@ -89,6 +110,23 @@ const Dashboard: React.FC = () => {
     setDaysOfMonth(nameOfDays);
   }, [dateSelected]);
 
+  function formatAppointment(myAppointments: []) {
+    const appointmentsFormmated = hoursOfDay.map(hour => {
+      return {
+        hour,
+        hourStart: `${String(hour).padStart(2, '0')}:00`,
+        hourEnd: `${String(hour + 1).padStart(2, '0')}:00`,
+        isCurrent: getHours(currentDate) === hour,
+        isFuture: hour > getHours(currentDate),
+        appointment: myAppointments.find((appointment: Appointment) => {
+          return getHours(parseISO(appointment.date)) === hour;
+        }),
+      };
+    });
+
+    setAppointments(appointmentsFormmated);
+  }
+
   useEffect(() => {
     api
       .get('/appointments/me', {
@@ -99,22 +137,9 @@ const Dashboard: React.FC = () => {
         },
       })
       .then(response => {
-        const appointmentsFormmated = hoursOfDay.map(hour => {
-          return {
-            hour,
-            hourStart: `${String(hour).padStart(2, '0')}:00`,
-            hourEnd: `${String(hour + 1).padStart(2, '0')}:00`,
-            isCurrent: getHours(currentDate) === hour,
-            isFuture: hour > getHours(currentDate),
-            appointment: response.data.find((appointment: Appointment) => {
-              return getHours(parseISO(appointment.date)) === hour;
-            }),
-          };
-        });
-
-        setAppointments(appointmentsFormmated);
+        formatAppointment(response.data);
       });
-  }, [hoursOfDay, currentDate]);
+  }, []);
 
   const dateSeletedText = useMemo(() => {
     const today = isToday(dateSelected) ? 'Hoje' : '';
@@ -124,6 +149,30 @@ const Dashboard: React.FC = () => {
 
     return `${today} | ${result}`;
   }, [dateSelected]);
+
+  async function handleSelectAppoinmentDate({ day, month }: ISelectDate) {
+    if (day) {
+      setDaySelected(day);
+    }
+
+    if (month) {
+      setMonthSelected(month);
+    }
+
+    try {
+      const response = await api.get('/appointments/me', {
+        params: {
+          day: day || daySelected,
+          month: month || monthSelected,
+          year: 2020,
+        },
+      });
+
+      formatAppointment(response.data);
+    } catch (error) {
+      toast.error('Erro ao carregar agendamentos!');
+    }
+  }
 
   return (
     <Container>
@@ -139,10 +188,14 @@ const Dashboard: React.FC = () => {
 
         <CalendarMonth>
           <ul>
-            {months.map(month => (
-              <li key={month} className={month === 'Maio' ? 'active' : ''}>
+            {months.map((month, index) => (
+              <Month
+                key={month}
+                selected={index + 1 === monthSelected}
+                onClick={() => handleSelectAppoinmentDate({ month: index + 1 })}
+              >
                 {month}
-              </li>
+              </Month>
             ))}
           </ul>
         </CalendarMonth>
@@ -150,10 +203,14 @@ const Dashboard: React.FC = () => {
         <CalendarDay>
           <ul>
             {daysOfMonth.map(({ number, day }) => (
-              <li key={number} className={`${number === 7 ? 'active' : ''}`}>
+              <Day
+                key={number}
+                selected={number === daySelected}
+                onClick={() => handleSelectAppoinmentDate({ day: number })}
+              >
                 <strong>{number}</strong>
                 <span>{day}</span>
-              </li>
+              </Day>
             ))}
           </ul>
         </CalendarDay>
