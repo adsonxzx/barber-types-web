@@ -5,12 +5,14 @@ import Header from '../components/Header/index';
 
 interface Props extends RouteProps {
   isPrivate?: boolean;
+  isClient?: boolean;
   component: React.ComponentType;
 }
 
 const RouteWrapper: React.FC<Props> = ({
   component: Component,
   isPrivate = false,
+  isClient = false,
   ...rest
 }) => {
   const { user } = useAuth();
@@ -21,7 +23,7 @@ const RouteWrapper: React.FC<Props> = ({
       render={({ location }) => {
         return isPrivate === !!user ? (
           <>
-            {isPrivate && <Header />}
+            {isPrivate && !isClient && <Header />}
             <Component />
           </>
         ) : (

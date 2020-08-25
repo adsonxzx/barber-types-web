@@ -19,11 +19,15 @@
     "formik": "^2.1.4",
     "framer-motion": "^2.4.2",
     "history": "^5.0.0",
+    "pure-react-carousel": "^1.27.1",
     "react": "^16.13.1",
+    "react-day-picker": "^7.4.8",
     "react-dom": "^16.13.1",
+    "react-draggable": "^4.4.3",
     "react-icons": "^3.10.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
+    "react-slick": "^0.27.10",
     "react-toastify": "^6.0.8",
     "styled-components": "^5.1.1",
     "typescript": "~3.7.2",
@@ -48,6 +52,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react-slick": "^0.23.4",
     "@types/styled-components": "^5.1.1",
     "@types/yup": "^0.29.3",
     "@typescript-eslint/eslint-plugin": "^3.6.0",
