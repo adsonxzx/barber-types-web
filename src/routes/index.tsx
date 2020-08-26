@@ -27,7 +27,7 @@ const Routes: React.FC = () => (
       isClient
     />
     <Route
-      path="/c/appointment/create"
+      path="/c/appointment/create/:provider_id"
       component={CreateAppointment}
       isPrivate
       isClient

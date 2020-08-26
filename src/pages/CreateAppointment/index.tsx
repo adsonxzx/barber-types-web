@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { MdArrowBack, MdDone } from 'react-icons/md';
-import DayPicker from 'react-day-picker';
+import DayPicker, { DayModifiers } from 'react-day-picker';
+import { useParams } from 'react-router-dom';
+import { setHours, setMinutes, setSeconds, formatISO } from 'date-fns';
+import { toast } from 'react-toastify';
+import history from '../../utils/history';
 
 import Avatar from '../../components/Avatar';
 import {
@@ -16,71 +20,164 @@ import {
   Done,
 } from './styles';
 import userAvatar from '../../assets/provider.jpg';
+import api from '../../services/api';
+
+interface IProvider {
+  id: string;
+  name: string;
+  email: string;
+  avatar: string;
+  selected: boolean;
+}
+
+interface IDayAvailable {
+  hour: number;
+  available: boolean;
+}
+
+interface ITimeDayAvailable {
+  moning: IDayAvailable[];
+  afternoon: IDayAvailable[];
+  night: IDayAvailable[];
+}
 
 const CreateAppointment: React.FC = () => {
-  const [daySelected, setDaySelected] = useState();
+  const { provider_id } = useParams();
+
+  const [dateSelected, setDateSelected] = useState(new Date());
+  const [providers, setProviders] = useState<IProvider[]>([]);
+  const [providerSelected, setProviderSelected] = useState(provider_id);
+  const [timeDayAvailable, setTimeDayAvailable] = useState<ITimeDayAvailable>();
+
+  const [hourSelected, setHourSelected] = useState(8);
+
+  useEffect(() => {
+    api.get('/providers').then(response => setProviders(response.data));
+  }, []);
+
+  useEffect(() => {
+    api.get(`/providers/${providerSelected}/day-available`).then(response => {
+      const moning = response.data.slice(0, 4);
+      const afternoon = response.data.slice(4, 10);
+      const night = response.data.slice(10, 13);
+
+      setTimeDayAvailable({ moning, afternoon, night });
+    });
+  }, [dateSelected]);
+
+  const handleDateChange = useCallback((day: Date, modifiers: DayModifiers) => {
+    setDateSelected(day);
+  }, []);
+
+  const createAppointment = useCallback(async () => {
+    const dateFormatted = setHours(
+      setMinutes(setSeconds(dateSelected, 0), 0),
+      hourSelected,
+    );
+
+    try {
+      const result = await api.post('/appointments', {
+        date: formatISO(dateFormatted),
+        provider_id: providerSelected,
+      });
+
+      console.log(result);
+    } catch (error) {
+      toast.error('Error ao criar agendamento!');
+    }
+  }, [dateSelected, hourSelected, providerSelected]);
 
   return (
     <Container>
       <Header>
         <div>
-          <MdArrowBack color="#999591" size={24} />
+          <MdArrowBack
+            color="#999591"
+            size={24}
+            onClick={() => history.back()}
+          />
           <span>Agendamento</span>
           <Avatar size={56} />
         </div>
       </Header>
+
       <Content>
         <ListProvider>
-          <Provider selected>
-            <Avatar size={32} img={userAvatar} />
-            <span>Adson Souza</span>
-          </Provider>
-          <Provider selected={false}>
-            <Avatar size={32} />
-            <span>Adson Souza</span>
-          </Provider>
-          <Provider selected={false}>
-            <Avatar size={32} />
-            <span>Adson Souza</span>
-          </Provider>
-          <Provider selected={false}>
-            <Avatar size={32} />
-            <span>Adson Souza</span>
-          </Provider>
+          {providers.map(provider => (
+            <Provider
+              key={provider.id}
+              selected={provider.id === providerSelected}
+              onClick={() => setProviderSelected(provider.id)}
+            >
+              <Avatar size={32} img={provider.avatar} />
+              <span>{provider.name}</span>
+            </Provider>
+          ))}
         </ListProvider>
 
         <SelectDate>
           <h3>Escolha a Data</h3>
-          <DayPicker onDayClick={() => setDaySelected} />
+          <DayPicker
+            weekdaysShort={['D', 'S', 'T', 'Q', 'Q', 'S', 'S']}
+            disabledDays={[{ daysOfWeek: [0, 6] }]}
+            fromMonth={new Date()}
+            onDayClick={handleDateChange}
+          />
         </SelectDate>
 
         <SelectHour>
           <h3>Escolha o Horário</h3>
 
-          <span>Manhã</span>
-          <ul>
-            <Hour>09:00</Hour>
-            <Hour>10:00</Hour>
-            <Hour>11:00</Hour>
-          </ul>
+          {!!timeDayAvailable?.moning.length && (
+            <>
+              <span>Manhã</span>
+              <ul>
+                {timeDayAvailable.moning.map(({ hour }) => (
+                  <Hour
+                    onClick={() => setHourSelected(hour)}
+                    selected={hourSelected === hour}
+                  >
+                    {`${hour}:00`}
+                  </Hour>
+                ))}
+              </ul>
+            </>
+          )}
 
-          <span>Tarde</span>
-          <ul>
-            <Hour>09:00</Hour>
-            <Hour>10:00</Hour>
-            <Hour>11:00</Hour>
-            <Hour>11:00</Hour>
-          </ul>
+          {!!timeDayAvailable?.afternoon.length && (
+            <>
+              <span>Tarde</span>
+              <ul>
+                {timeDayAvailable.afternoon.map(({ hour }) => (
+                  <Hour
+                    onClick={() => setHourSelected(hour)}
+                    selected={hourSelected === hour}
+                  >
+                    {`${hour}:00`}
+                  </Hour>
+                ))}
+              </ul>
+            </>
+          )}
 
-          <span>Noite</span>
-          <ul>
-            <Hour selected>09:00</Hour>
-            <Hour>10:00</Hour>
-            <Hour>11:00</Hour>
-          </ul>
+          {!!timeDayAvailable?.night.length && (
+            <>
+              <span>Noite</span>
+              <ul>
+                {timeDayAvailable.night.map(({ hour }) => (
+                  <Hour
+                    onClick={() => setHourSelected(hour)}
+                    selected={hourSelected === hour}
+                  >
+                    {`${hour}:00`}
+                  </Hour>
+                ))}
+              </ul>
+            </>
+          )}
         </SelectHour>
 
-        <Button>Agendar</Button>
+        <Button onClick={createAppointment}>Agendar</Button>
       </Content>
       <Done>
         <MdDone size={56} color="#04D361" />

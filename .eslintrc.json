@@ -29,6 +29,8 @@
 				"prettier"
     ],
     "rules": {
+      "@typescript-eslint/camelcase": "off",
+      "@typescript-eslint/naming-convention": "off",
       "import/no-duplicates": "off",
 			"react-hooks/rules-of-hooks": "error",
 			"react-hooks/exhaustive-deps": "warn",

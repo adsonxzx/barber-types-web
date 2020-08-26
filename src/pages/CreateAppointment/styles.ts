@@ -53,7 +53,6 @@ export const Provider = styled.li<IProvider>`
   border-radius: 10px;
   display: flex;
   align-items: center;
-  min-width: 175px;
   padding: 7px 10px;
 
   & + li {
@@ -61,6 +60,8 @@ export const Provider = styled.li<IProvider>`
   }
 
   span {
+    white-space: nowrap;
+
     display: inline-block;
     font-weight: 500;
     margin-left: 10px;
@@ -92,6 +93,10 @@ export const SelectDate = styled.div`
   .DayPicker-Caption {
     text-align: center;
   }
+
+  .DayPicker-Month {
+    width: 100%;
+  }
 `;
 
 export const SelectHour = styled.div`
@@ -111,7 +116,8 @@ export const SelectHour = styled.div`
 
   ul {
     display: flex;
-    margin-bottom: 25px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
   }
 `;
 
@@ -120,13 +126,12 @@ export const Hour = styled.li<IHour>`
   color: ${({ selected }) => (selected ? '#232129' : '#fff')};
   border-radius: 10px;
   padding: 0px 10px;
-  height: 40px;
+  height: 35px;
   display: flex;
   align-items: center;
-
-  & + li {
-    margin-left: 15px;
-  }
+  font-size: 14px;
+  margin-right: 12px;
+  margin-bottom: 12px;
 `;
 
 export const Button = styled.button`

@@ -47,10 +47,7 @@ export const BoxProvider = styled.div`
   align-items: center;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
   background: #3e3b47;
-
-  & + div {
-    margin-top: 20px;
-  }
+  margin-top: 20px;
 
   > .info {
     margin-left: 15px;

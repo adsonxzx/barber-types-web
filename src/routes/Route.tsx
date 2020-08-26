@@ -29,7 +29,7 @@ const RouteWrapper: React.FC<Props> = ({
         ) : (
           <Redirect
             to={{
-              pathname: isPrivate ? '/' : '/dashboard',
+              pathname: isPrivate ? '/' : '/p/dashboard',
               state: { from: location },
             }}
           />
