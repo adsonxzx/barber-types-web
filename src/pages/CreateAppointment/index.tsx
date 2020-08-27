@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { MdArrowBack, MdDone } from 'react-icons/md';
 import DayPicker, { DayModifiers } from 'react-day-picker';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { setHours, setMinutes, setSeconds, formatISO } from 'date-fns';
 import { toast } from 'react-toastify';
 import history from '../../utils/history';
@@ -48,7 +48,7 @@ const CreateAppointment: React.FC = () => {
   const [providers, setProviders] = useState<IProvider[]>([]);
   const [providerSelected, setProviderSelected] = useState(provider_id);
   const [timeDayAvailable, setTimeDayAvailable] = useState<ITimeDayAvailable>();
-
+  const [appointmentCreated, setAppointmentCreated] = useState(false);
   const [hourSelected, setHourSelected] = useState(8);
 
   useEffect(() => {
@@ -81,7 +81,7 @@ const CreateAppointment: React.FC = () => {
         provider_id: providerSelected,
       });
 
-      console.log(result);
+      setAppointmentCreated(true);
     } catch (error) {
       toast.error('Error ao criar agendamento!');
     }
@@ -179,11 +179,13 @@ const CreateAppointment: React.FC = () => {
 
         <Button onClick={createAppointment}>Agendar</Button>
       </Content>
-      <Done>
+      <Done active={appointmentCreated}>
         <MdDone size={56} color="#04D361" />
         <span>Agendamento Concluído</span>
         <p>Terça, dia 14 de maio de 2020 às 12:00h com Adson Souza</p>
-        <Button>Ok</Button>
+        <Link to="/c/appointment/select-provider">
+          <Button>Ok</Button>
+        </Link>
       </Done>
     </Container>
   );
