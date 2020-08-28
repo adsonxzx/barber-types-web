@@ -19,6 +19,7 @@ import {
 import pt from 'date-fns/locale/pt';
 import { MdContentCut, MdMoreHoriz } from 'react-icons/md';
 import { motion } from 'framer-motion';
+import Carousel from 'react-elastic-carousel';
 
 import { toast } from 'react-toastify';
 import {
@@ -36,8 +37,10 @@ import {
   Appointment,
 } from './styles';
 
-import providerAvatar from '../../assets/provider.jpg';
 import api from '../../services/api';
+import { useAuth } from '../../hooks/AuthContext';
+import providerAvatar from '../../assets/provider-avatar.png';
+import providerImage from '../../assets/provider.jpg';
 
 interface IDaysOfMonth {
   number: number;
@@ -64,6 +67,7 @@ interface ISelectDate {
 
 const Dashboard: React.FC = () => {
   const constraintsRef = useRef(null);
+  const { user } = useAuth();
 
   const [months, setMonths] = useState([
     'Janeiro',
@@ -174,6 +178,11 @@ const Dashboard: React.FC = () => {
     }
   }
 
+  const busySchedule = useMemo(() => {
+    const busy = appointments.filter(({ appointment }) => !!appointment);
+    return busy.length;
+  }, [appointments]);
+
   return (
     <Container>
       <Content>
@@ -186,22 +195,30 @@ const Dashboard: React.FC = () => {
           <button type="button">+ Criar</button>
         </ContentHeader>
 
-        <CalendarMonth>
-          <ul>
-            {months.map((month, index) => (
-              <Month
-                key={month}
-                selected={index + 1 === monthSelected}
-                onClick={() => handleSelectAppoinmentDate({ month: index + 1 })}
-              >
-                {month}
-              </Month>
-            ))}
-          </ul>
+        <CalendarMonth
+          initialFirstItem={monthSelected}
+          itemsToScroll={4}
+          itemPadding={[0, 0]}
+          itemsToShow={7}
+        >
+          {months.map((month, index) => (
+            <Month
+              key={month}
+              selected={index + 1 === monthSelected}
+              onClick={() => handleSelectAppoinmentDate({ month: index + 1 })}
+            >
+              {month}
+            </Month>
+          ))}
         </CalendarMonth>
 
         <CalendarDay>
-          <ul>
+          <Carousel
+            initialFirstItem={daySelected}
+            itemsToScroll={7}
+            itemPadding={[0, 0]}
+            itemsToShow={12}
+          >
             {daysOfMonth.map(({ number, day }) => (
               <Day
                 key={number}
@@ -212,7 +229,7 @@ const Dashboard: React.FC = () => {
                 <span>{day}</span>
               </Day>
             ))}
-          </ul>
+          </Carousel>
         </CalendarDay>
 
         <Appointments ref={constraintsRef}>
@@ -261,19 +278,20 @@ const Dashboard: React.FC = () => {
       </Content>
 
       <SiderBar>
-        <img src={providerAvatar} alt="Provider" />
-        <strong>Adson Souza</strong>
-        <p>adsonxzx@gmail.com</p>
+        {/* <img src={user.avatar || providerAvatar} alt="Provider" /> */}
+        <img src={providerImage} alt="Provider" />
+        <strong>{user.name}</strong>
+        <p>{user.email}</p>
 
         <div className="available">
           <div>
             <span>Ocupado</span>
-            <strong>9</strong>
+            <strong>{busySchedule}</strong>
           </div>
 
           <div>
             <span>Livre</span>
-            <strong>1</strong>
+            <strong>{10 - busySchedule}</strong>
           </div>
         </div>
 

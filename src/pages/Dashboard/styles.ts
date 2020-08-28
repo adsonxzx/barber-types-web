@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components';
 import { motion } from 'framer-motion';
+import Carousel from 'react-elastic-carousel';
 import { colorGrayLight, colorBlack } from '../../styles/colors';
 
 interface IAppointment {
@@ -59,50 +60,53 @@ export const ContentHeader = styled.div`
   }
 `;
 
-export const CalendarMonth = styled.div`
-  overflow: hidden;
-  width: 100%;
-  position: relative;
+export const CalendarMonth = styled(Carousel)`
   height: 50px;
   margin-top: 25px;
 
   &::after {
     content: '';
-    width: 50px;
-    height: 100%;
+    width: 45px;
+    height: 50px;
     background: #fff;
     opacity: 0.75;
     display: block;
     position: absolute;
-    right: 0;
+    right: 364px;
     z-index: 99;
   }
 
   &::before {
     content: '';
-    width: 50px;
-    height: 100%;
+    width: 45px;
+    height: 50px;
     background: #fff;
     opacity: 0.75;
     display: block;
     position: absolute;
-    left: 0;
+    left: 75px;
     z-index: 99;
   }
 
-  ul {
-    position: absolute;
-    left: -182px;
-    display: flex;
+  /* Slider */
+  .rec-item-wrapper {
+    /* width: 120px !important; */
+  }
+  .rec-arrow {
+    display: none;
+  }
+  .rec-pagination {
+    display: none;
   }
 `;
 
-export const Month = styled.li<IMonth>`
+export const Month = styled.div<IMonth>`
+  width: 100%;
   font-size: 22px;
   font-weight: 600;
-  margin: 0 25px;
   cursor: pointer;
   color: #ababab;
+  text-align: center;
 
   ${({ selected }) =>
     selected &&
@@ -112,26 +116,26 @@ export const Month = styled.li<IMonth>`
 `;
 
 export const CalendarDay = styled.div`
-  overflow: hidden;
   width: 100%;
   position: relative;
   margin-top: 25px;
 
   &::after {
     content: '';
-    width: 50px;
+    width: 40px;
     height: 100%;
     background: #fff;
     opacity: 0.75;
     display: block;
     position: absolute;
     right: 0;
+    top: 0;
     z-index: 99;
   }
 
   &::before {
     content: '';
-    width: 50px;
+    width: 40px;
     height: 100%;
     background: #fff;
     opacity: 0.75;
@@ -141,12 +145,19 @@ export const CalendarDay = styled.div`
     z-index: 99;
   }
 
-  ul {
-    display: flex;
+  /* Slider */
+  .rec-item-wrapper {
+    /* width: 120px !important; */
+  }
+  .rec-arrow {
+    display: none;
+  }
+  .rec-pagination {
+    display: none;
   }
 `;
 
-export const Day = styled.li<IDay>`
+export const Day = styled.div<IDay>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -352,7 +363,14 @@ export const ClienteAvatar = styled.div`
 `;
 
 export const SiderBar = styled.div`
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
   > img {
+    width: 100%;
+    height: 100%;
     margin: 0 auto;
     border-radius: 8px;
     text-align: center;
