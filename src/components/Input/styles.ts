@@ -7,7 +7,7 @@ interface Props {
 }
 
 export const Container = styled.div<Props>`
-  height: 45px;
+  height: 50px;
   border-radius: 7px;
   color: #666360;
   display: flex;

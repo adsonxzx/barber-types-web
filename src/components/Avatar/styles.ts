@@ -5,15 +5,16 @@ interface Props {
 }
 
 export const Container = styled.div<Props>`
-  background: #3e3b47;
   width: ${props => `${props.size}px`};
   border-radius: 50%;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 0 auto;
+  box-shadow: 0px 0px 3px rgba(1, 1, 0, 0.3);
 
   img {
-    max-width: 100%;
+    width: 100%;
   }
 `;

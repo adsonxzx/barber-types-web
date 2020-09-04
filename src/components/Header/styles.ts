@@ -14,7 +14,8 @@ export const Container = styled.header`
     justify-content: space-between;
     align-items: center;
 
-    > div {
+    > div,
+    > a {
       display: flex;
       justify-content: center;
       align-items: center;

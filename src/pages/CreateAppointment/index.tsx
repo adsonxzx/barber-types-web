@@ -56,13 +56,21 @@ const CreateAppointment: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    api.get(`/providers/${providerSelected}/day-available`).then(response => {
-      const moning = response.data.slice(0, 4);
-      const afternoon = response.data.slice(4, 10);
-      const night = response.data.slice(10, 13);
+    api
+      .get(`/providers/${providerSelected}/day-available`, {
+        params: {
+          day: 30,
+          month: 8,
+          year: 2020,
+        },
+      })
+      .then(response => {
+        const moning = response.data.slice(0, 4);
+        const afternoon = response.data.slice(4, 10);
+        const night = response.data.slice(10, 13);
 
-      setTimeDayAvailable({ moning, afternoon, night });
-    });
+        setTimeDayAvailable({ moning, afternoon, night });
+      });
   }, [dateSelected]);
 
   const handleDateChange = useCallback((day: Date, modifiers: DayModifiers) => {

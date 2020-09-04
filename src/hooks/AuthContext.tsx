@@ -10,6 +10,7 @@ interface AuthContextData {
   user: IUser;
   signIn(credentials: SignInCredentials): Promise<void>;
   signOut(): void;
+  updateUser(data:IUser): void;
 }
 
 interface AuthState {
@@ -61,8 +62,18 @@ const AuthProvider: React.FC = ({ children }) => {
     setData({} as AuthState);
   }, []);
 
+  /**
+   * Update Profile
+   */
+  const updateUser = useCallback((user:IUser) => {
+    console.log(user);
+    setData({...data, user})
+    localStorage.setItem('@Barber:user', JSON.stringify(user));
+
+  },[])
+
   return (
-    <AuthContext.Provider value={{ user: data.user, signIn, signOut }}>
+    <AuthContext.Provider value={{ user: data.user, signIn, signOut, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

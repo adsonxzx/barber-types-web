@@ -5,10 +5,11 @@ import loadingButton from '../../assets/loading.svg';
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   loading?: boolean;
+  disable?: boolean;
 };
 
-const Button: React.FC<Props> = ({ children, loading, ...rest }) => (
-  <Container type="button" {...rest}>
+const Button: React.FC<Props> = ({ children, loading, disable, ...rest }) => (
+  <Container disable={disable} type="button" {...rest}>
     <>{loading ? <img src={loadingButton} alt="loading" /> : children}</>
   </Container>
 );

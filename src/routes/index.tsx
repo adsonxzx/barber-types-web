@@ -10,6 +10,7 @@ import ForgotPassword from '../pages/ForgotPassword';
 import ResetPassword from '../pages/ResetPassword';
 import SelectProvider from '../pages/SelectProvider';
 import CreateAppointment from '../pages/CreateAppointment';
+import Profile from '../pages/Profile';
 
 const Routes: React.FC = () => (
   <Switch>
@@ -17,6 +18,7 @@ const Routes: React.FC = () => (
     <Route path="/register" component={SignUp} />
     <Route path="/passwords/forgot" component={ForgotPassword} />
     <Route path="/passwords/reset" component={ResetPassword} />
+    <Route path="/profile" isPrivate component={Profile} />
 
     <Route path="/p/dashboard" component={Dashboard} isPrivate />
 

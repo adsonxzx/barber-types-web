@@ -12,7 +12,6 @@ import {
   getHours,
   getDate,
   getMonth,
-  isAfter,
   parseISO,
   isToday,
 } from 'date-fns';
@@ -20,6 +19,7 @@ import pt from 'date-fns/locale/pt';
 import { MdContentCut, MdMoreHoriz } from 'react-icons/md';
 import { motion } from 'framer-motion';
 import Carousel from 'react-elastic-carousel';
+import { Link } from 'react-router-dom';
 
 import { toast } from 'react-toastify';
 import {
@@ -278,8 +278,11 @@ const Dashboard: React.FC = () => {
       </Content>
 
       <SiderBar>
-        {/* <img src={user.avatar || providerAvatar} alt="Provider" /> */}
-        <img src={providerImage} alt="Provider" />
+        <Link to="/profile">
+        <img src={user.avatar || providerImage} alt="Provider" />
+
+          {/* <img src={providerImage} alt="Provider" /> */}
+        </Link>
         <strong>{user.name}</strong>
         <p>{user.email}</p>
 

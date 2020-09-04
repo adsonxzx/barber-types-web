@@ -368,12 +368,14 @@ export const SiderBar = styled.div`
   flex-direction: column;
   justify-content: center;
 
-  > img {
-    width: 100%;
-    height: 100%;
-    margin: 0 auto;
-    border-radius: 8px;
-    text-align: center;
+  > a {
+    img {
+      width: 100%;
+      height: 100%;
+      margin: 0 auto;
+      border-radius: 8px;
+      text-align: center;
+    }
   }
 
   > strong {
