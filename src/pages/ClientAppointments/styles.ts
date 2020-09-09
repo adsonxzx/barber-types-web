@@ -19,9 +19,13 @@ export const Header = styled.div`
     max-width: 327px;
     margin: 0 auto;
 
+    p {
+      color: #fff;
+      margin-bottom: 5px;
+    }
+
     span {
-      color: #f4ede8;
-      font-size: 20px;
+      color: ${colorOrange};
     }
   }
 `;
@@ -39,36 +43,36 @@ export const Content = styled.div`
   }
 `;
 
-export const BoxProvider = styled.div`
-  padding: 7px 12px;
-  border-radius: 7px;
+export const EmptyContent = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  background: #fff;
-  margin-top: 20px;
+  justify-content: center;
+  margin-top: 50px;
 
-  > .info {
-    margin-left: 15px;
+  > div {
+    width: 170px;
+    height: 170px;
+    background: #eeeff1;
+    border-radius: 50%;
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 
-    h3 {
-      font-size: 16px;
-      color: #232129;
-      margin-bottom: 10px;
+    img {
+      width: 95px;
     }
+  }
 
-    span {
-      display: flex;
-      align-items: center;
-      margin-bottom: 7px;
-      color: #999591;
-      font-size: 12px;
+  span {
+    color: #b8b9bb;
+    max-width: 173px;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
 
-      svg {
-        margin-right: 7px;
-      }
-    }
+  a {
+    color: ${colorOrange};
   }
 `;

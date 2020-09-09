@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import Carousel from 'react-elastic-carousel';
+import { colorOrange } from '../../styles/colors';
 
 interface IProvider {
   selected?: boolean;
@@ -13,11 +15,12 @@ interface IDone {
 }
 
 export const Container = styled.div`
-  background: #fdfdfd;
+  background: #f6f6f6;
+  padding-bottom: 35px;
 `;
 
 export const Header = styled.div`
-  background: #28262e;
+  background: #1f2326;
   height: 100px;
   padding: 20px 0;
 
@@ -39,33 +42,45 @@ export const Content = styled.div`
   width: 100%;
   max-width: 327px;
   margin: 0 auto;
-`;
-
-export const ListProvider = styled.ul`
-  margin-top: 30px;
-  display: flex;
-  align-items: center;
   overflow: hidden;
 `;
 
+export const ListProvider = styled(Carousel)`
+  margin-top: 30px;
+  width: 400px;
+
+  /* Slider */
+  .rec-item-wrapper {
+    /* width: 120px !important; */
+  }
+  .rec-arrow {
+    display: none;
+  }
+  .rec-pagination {
+    display: none;
+  }
+`;
+
 export const Provider = styled.li<IProvider>`
-  background: ${({ selected }) => (selected ? '#FF9000' : '#3E3B47')};
+  background: ${({ selected }) => (selected ? '#FF9000' : '#fff')};
   border-radius: 10px;
   display: flex;
   align-items: center;
-  padding: 7px 10px;
+  padding: 12px;
+  width: 100%;
+  overflow: hidden;
 
   & + li {
     margin-left: 15px;
   }
 
   span {
+    width: 20px;
     white-space: nowrap;
-
     display: inline-block;
     font-weight: 500;
     margin-left: 10px;
-    color: ${({ selected }) => (selected ? '#232129' : '#fff')};
+    color: #232129;
   }
 `;
 
@@ -73,7 +88,7 @@ export const SelectDate = styled.div`
   margin-top: 40px;
 
   h3 {
-    font-size: 25px;
+    font-size: 23px;
     color: #28262e;
     margin-bottom: 24px;
   }
@@ -82,6 +97,8 @@ export const SelectDate = styled.div`
   .DayPicker {
     width: 100%;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    background: #fff;
+    border-radius: 10px;
   }
 
   .DayPicker-NavBar {
@@ -92,10 +109,19 @@ export const SelectDate = styled.div`
 
   .DayPicker-Caption {
     text-align: center;
+    margin-bottom: 20px !important;
   }
 
   .DayPicker-Month {
     width: 100%;
+    margin: 0;
+    margin-top: 14px;
+  }
+
+  .DayPicker-Day[selected='false'] {
+    background-color: #ff9000 !important;
+    border-radius: 10px;
+    color: #232129 !important;
   }
 `;
 
@@ -103,7 +129,7 @@ export const SelectHour = styled.div`
   margin-top: 40px;
 
   h3 {
-    font-size: 25px;
+    font-size: 23px;
     color: #28262e;
     margin-bottom: 24px;
   }
@@ -122,11 +148,11 @@ export const SelectHour = styled.div`
 `;
 
 export const Hour = styled.li<IHour>`
-  background: ${({ selected }) => (selected ? '#FF9000' : '#3E3B47')};
-  color: ${({ selected }) => (selected ? '#232129' : '#fff')};
+  background: ${({ selected }) => (selected ? '#FF9000' : '#fff')};
+  color: #232129;
   border-radius: 10px;
-  padding: 0px 10px;
-  height: 35px;
+  padding: 0px 15px;
+  height: 40px;
   display: flex;
   align-items: center;
   font-size: 14px;

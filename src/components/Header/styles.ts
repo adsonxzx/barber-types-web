@@ -32,6 +32,8 @@ export const Container = styled.header`
         color: ${colorOrange};
         margin-left: 18px;
         font-size: 15px;
+        display: block;
+        width: 100%;
       }
     }
 

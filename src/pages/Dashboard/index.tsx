@@ -279,10 +279,9 @@ const Dashboard: React.FC = () => {
 
       <SiderBar>
         <Link to="/profile">
-        <img src={user.avatar || providerImage} alt="Provider" />
-
-          {/* <img src={providerImage} alt="Provider" /> */}
+          <img src={user.avatar_url || providerImage} alt="Provider" />
         </Link>
+
         <strong>{user.name}</strong>
         <p>{user.email}</p>
 

@@ -11,6 +11,7 @@ import ResetPassword from '../pages/ResetPassword';
 import SelectProvider from '../pages/SelectProvider';
 import CreateAppointment from '../pages/CreateAppointment';
 import Profile from '../pages/Profile';
+import ClientAppointments from '../pages/ClientAppointments';
 
 const Routes: React.FC = () => (
   <Switch>
@@ -23,13 +24,20 @@ const Routes: React.FC = () => (
     <Route path="/p/dashboard" component={Dashboard} isPrivate />
 
     <Route
-      path="/c/appointment/select-provider"
+      exact
+      path="/c/appointments"
+      component={ClientAppointments}
+      isPrivate
+      isClient
+    />
+    <Route
+      path="/c/appointments/select-provider"
       component={SelectProvider}
       isPrivate
       isClient
     />
     <Route
-      path="/c/appointment/create/:provider_id"
+      path="/c/appointments/create/:provider_id"
       component={CreateAppointment}
       isPrivate
       isClient

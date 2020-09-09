@@ -14,7 +14,7 @@ const Header: React.FC = () => {
     <Container>
       <div>
         <Link to="/profile">
-          <Avatar size={45} img={user.avatar}/>
+          <Avatar size={45} img={user.avatar_url} />
 
           <div>
             <p>Bem Vindo</p>

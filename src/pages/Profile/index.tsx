@@ -4,13 +4,13 @@ import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import { MdAddAPhoto, MdEmail, MdLock, MdPerson } from 'react-icons/md';
 
+import { useHistory } from 'react-router-dom';
 import { Container, Content, AvatarInput } from './styles';
 import api from '../../services/api';
 import Input from '../../components/Input/index';
 import Button from '../../components/Button';
 import Avatar from '../../components/Avatar';
 import { useAuth } from '../../hooks/AuthContext';
-import { useHistory } from "react-router-dom";
 
 interface Values {
   name: string;
@@ -67,7 +67,7 @@ const Profile: React.FC = () => {
 
       history.push('/p/dashboard');
       const response = await api.put('/profiles', userProfile);
-      updateUser(response.data)
+      updateUser(response.data);
 
       toast.success('Dados atualizado com sucesso!');
     } catch (err) {
@@ -90,7 +90,10 @@ const Profile: React.FC = () => {
 
           setAvatar(`http://localhost:3333/files/${response.data.avatar}`);
 
-          updateUser({...user, avatar: `http://localhost:3333/files/${response.data.avatar}`})
+          updateUser({
+            ...user,
+            avatar: `http://localhost:3333/files/${response.data.avatar}`,
+          });
 
           toast.success('Atualizado');
         }
@@ -112,7 +115,7 @@ const Profile: React.FC = () => {
           {(props: FormikProps<Values>) => (
             <Form>
               <AvatarInput htmlFor="avatar">
-                <Avatar size={165} img={avatar || user.avatar} />
+                <Avatar size={165} img={avatar || user.avatar_url} />
                 <span>
                   <MdAddAPhoto size={18} color="#1F1D2A" />
                 </span>

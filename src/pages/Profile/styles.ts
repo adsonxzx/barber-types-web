@@ -38,7 +38,7 @@ export const Content = styled.div`
 `;
 
 export const AvatarInput = styled.label`
-  display: flex;
+  display: flex !important;
   align-items: center;
   justify-content: center;
   margin-bottom: 40px !important;

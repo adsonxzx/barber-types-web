@@ -2,9 +2,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { MdArrowBack, MdDone } from 'react-icons/md';
 import DayPicker, { DayModifiers } from 'react-day-picker';
 import { useParams, Link } from 'react-router-dom';
-import { setHours, setMinutes, setSeconds, formatISO } from 'date-fns';
+import { setHours, setMinutes, setSeconds, formatISO, format } from 'date-fns';
+import pt from 'date-fns/locale/pt-BR';
 import { toast } from 'react-toastify';
 import history from '../../utils/history';
+import { useAuth } from '../../hooks/AuthContext';
+import Footer from '../../components/Footer';
 
 import Avatar from '../../components/Avatar';
 import {
@@ -26,7 +29,7 @@ interface IProvider {
   id: string;
   name: string;
   email: string;
-  avatar: string;
+  avatar_url: string;
   selected: boolean;
 }
 
@@ -41,8 +44,19 @@ interface ITimeDayAvailable {
   night: IDayAvailable[];
 }
 
+interface IMonthAvailable {
+  day: number;
+  available: boolean;
+}
+
+interface IHourAvailable {
+  hour: number;
+  available: boolean;
+}
+
 const CreateAppointment: React.FC = () => {
   const { provider_id } = useParams();
+  const { user } = useAuth();
 
   const [dateSelected, setDateSelected] = useState(new Date());
   const [providers, setProviders] = useState<IProvider[]>([]);
@@ -50,6 +64,9 @@ const CreateAppointment: React.FC = () => {
   const [timeDayAvailable, setTimeDayAvailable] = useState<ITimeDayAvailable>();
   const [appointmentCreated, setAppointmentCreated] = useState(false);
   const [hourSelected, setHourSelected] = useState(8);
+
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [daysUnavailable, setDaysUnavailable] = useState([]);
 
   useEffect(() => {
     api.get('/providers').then(response => setProviders(response.data));
@@ -59,19 +76,22 @@ const CreateAppointment: React.FC = () => {
     api
       .get(`/providers/${providerSelected}/day-available`, {
         params: {
-          day: 30,
-          month: 8,
-          year: 2020,
+          day: dateSelected.getDate(),
+          month: dateSelected.getMonth() + 1,
+          year: dateSelected.getFullYear(),
         },
       })
       .then(response => {
-        const moning = response.data.slice(0, 4);
-        const afternoon = response.data.slice(4, 10);
-        const night = response.data.slice(10, 13);
+        const hoursAvailable = response.data.filter(
+          (appointment: IHourAvailable) => appointment.available === true,
+        );
+        const moning = hoursAvailable.slice(0, 4);
+        const afternoon = hoursAvailable.slice(4, 10);
+        const night = hoursAvailable.slice(10, 13);
 
         setTimeDayAvailable({ moning, afternoon, night });
       });
-  }, [dateSelected]);
+  }, [dateSelected, providerSelected]);
 
   const handleDateChange = useCallback((day: Date, modifiers: DayModifiers) => {
     setDateSelected(day);
@@ -95,6 +115,36 @@ const CreateAppointment: React.FC = () => {
     }
   }, [dateSelected, hourSelected, providerSelected]);
 
+  const handleMonthChange = useCallback((date: Date) => {
+    setCurrentMonth(date);
+  }, []);
+
+  useEffect(() => {
+    api
+      .get(`/providers/${providerSelected}/month-available`, {
+        params: {
+          year: currentMonth.getFullYear(),
+          month: currentMonth.getMonth() + 1,
+        },
+      })
+      .then(response => {
+        const getDaysUnavailable = response.data.filter(
+          (month: IMonthAvailable) => month.available === false,
+        );
+
+        const daysUnavailableFormatted = getDaysUnavailable.map(
+          (month: IMonthAvailable) =>
+            new Date(
+              currentMonth.getFullYear(),
+              currentMonth.getMonth(),
+              month.day,
+            ),
+        );
+
+        setDaysUnavailable(daysUnavailableFormatted);
+      });
+  }, [currentMonth, providerSelected]);
+
   return (
     <Container>
       <Header>
@@ -105,19 +155,24 @@ const CreateAppointment: React.FC = () => {
             onClick={() => history.back()}
           />
           <span>Agendamento</span>
-          <Avatar size={56} />
+          <Avatar size={56} img={user.avatar_url} />
         </div>
       </Header>
 
       <Content>
-        <ListProvider>
+        <ListProvider
+          initialFirstItem={2}
+          itemsToScroll={1}
+          itemPadding={[0, 15, 0, 0]}
+          itemsToShow={2}
+        >
           {providers.map(provider => (
             <Provider
               key={provider.id}
               selected={provider.id === providerSelected}
               onClick={() => setProviderSelected(provider.id)}
             >
-              <Avatar size={32} img={provider.avatar} />
+              <Avatar size={32} img={provider.avatar_url} />
               <span>{provider.name}</span>
             </Provider>
           ))}
@@ -127,9 +182,15 @@ const CreateAppointment: React.FC = () => {
           <h3>Escolha a Data</h3>
           <DayPicker
             weekdaysShort={['D', 'S', 'T', 'Q', 'Q', 'S', 'S']}
-            disabledDays={[{ daysOfWeek: [0, 6] }]}
+            disabledDays={[
+              ...daysUnavailable,
+              {
+                daysOfWeek: [0, 6],
+              },
+            ]}
             fromMonth={new Date()}
             onDayClick={handleDateChange}
+            onMonthChange={handleMonthChange}
           />
         </SelectDate>
 
@@ -142,6 +203,7 @@ const CreateAppointment: React.FC = () => {
               <ul>
                 {timeDayAvailable.moning.map(({ hour }) => (
                   <Hour
+                    key={hour}
                     onClick={() => setHourSelected(hour)}
                     selected={hourSelected === hour}
                   >
@@ -158,6 +220,7 @@ const CreateAppointment: React.FC = () => {
               <ul>
                 {timeDayAvailable.afternoon.map(({ hour }) => (
                   <Hour
+                    key={hour}
                     onClick={() => setHourSelected(hour)}
                     selected={hourSelected === hour}
                   >
@@ -174,6 +237,7 @@ const CreateAppointment: React.FC = () => {
               <ul>
                 {timeDayAvailable.night.map(({ hour }) => (
                   <Hour
+                    key={hour}
                     onClick={() => setHourSelected(hour)}
                     selected={hourSelected === hour}
                   >
@@ -187,14 +251,21 @@ const CreateAppointment: React.FC = () => {
 
         <Button onClick={createAppointment}>Agendar</Button>
       </Content>
+
       <Done active={appointmentCreated}>
         <MdDone size={56} color="#04D361" />
-        <span>Agendamento Concluído</span>
-        <p>Terça, dia 14 de maio de 2020 às 12:00h com Adson Souza</p>
-        <Link to="/c/appointment/select-provider">
+        <span>Agendamento Criado</span>
+        <p>
+          {format(dateSelected, "EEEE ', dia' ii 'de' LLLL 'às' hh':00h'", {
+            locale: pt,
+          })}
+        </p>
+        <Link to="/c/appointments">
           <Button>Ok</Button>
         </Link>
       </Done>
+
+      <Footer />
     </Container>
   );
 };
