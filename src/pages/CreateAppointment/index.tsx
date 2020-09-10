@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { MdArrowBack, MdDone } from 'react-icons/md';
 import DayPicker, { DayModifiers } from 'react-day-picker';
 import { useParams, Link } from 'react-router-dom';
@@ -59,11 +59,12 @@ const CreateAppointment: React.FC = () => {
   const { user } = useAuth();
 
   const [dateSelected, setDateSelected] = useState(new Date());
+  const [hourSelected, setHourSelected] = useState(8);
+
   const [providers, setProviders] = useState<IProvider[]>([]);
   const [providerSelected, setProviderSelected] = useState(provider_id);
   const [timeDayAvailable, setTimeDayAvailable] = useState<ITimeDayAvailable>();
   const [appointmentCreated, setAppointmentCreated] = useState(false);
-  const [hourSelected, setHourSelected] = useState(8);
 
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [daysUnavailable, setDaysUnavailable] = useState([]);
@@ -97,12 +98,12 @@ const CreateAppointment: React.FC = () => {
     setDateSelected(day);
   }, []);
 
-  const createAppointment = useCallback(async () => {
-    const dateFormatted = setHours(
-      setMinutes(setSeconds(dateSelected, 0), 0),
-      hourSelected,
-    );
+  const dateFormatted = useMemo(
+    () => setHours(setMinutes(setSeconds(dateSelected, 0), 0), hourSelected),
+    [dateSelected, hourSelected],
+  );
 
+  const createAppointment = useCallback(async () => {
     try {
       const result = await api.post('/appointments', {
         date: formatISO(dateFormatted),
@@ -113,7 +114,7 @@ const CreateAppointment: React.FC = () => {
     } catch (error) {
       toast.error('Error ao criar agendamento!');
     }
-  }, [dateSelected, hourSelected, providerSelected]);
+  }, [providerSelected, dateFormatted]);
 
   const handleMonthChange = useCallback((date: Date) => {
     setCurrentMonth(date);
@@ -256,7 +257,7 @@ const CreateAppointment: React.FC = () => {
         <MdDone size={56} color="#04D361" />
         <span>Agendamento Criado</span>
         <p>
-          {format(dateSelected, "EEEE ', dia' ii 'de' LLLL 'às' hh':00h'", {
+          {format(dateFormatted, "EEEE ', dia' dd 'de' LLLL 'às' HH':00h'", {
             locale: pt,
           })}
         </p>
