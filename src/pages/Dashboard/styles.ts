@@ -16,6 +16,8 @@ interface IMonth {
 
 interface IDay {
   selected: boolean;
+  available: boolean;
+  hasAppointment: boolean;
 }
 
 export const Container = styled.main`
@@ -181,6 +183,24 @@ export const Day = styled.div<IDay>`
     font-size: 15px;
     color: #c3c3c3;
   }
+
+  ${({ hasAppointment }) =>
+    hasAppointment &&
+    css`
+      strong {
+        background: #fee5bc;
+        color: ${colorBlack};
+      }
+    `}
+
+    ${({ available }) =>
+      !available &&
+      css`
+        strong {
+          background: #fcd080;
+          color: ${colorBlack};
+        }
+      `}
 
   ${({ selected }) =>
     selected &&

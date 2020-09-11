@@ -14,6 +14,7 @@ import {
   getMonth,
   parseISO,
   isToday,
+  getYear,
 } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 import { MdContentCut, MdMoreHoriz } from 'react-icons/md';
@@ -40,17 +41,29 @@ import {
 import api from '../../services/api';
 import { useAuth } from '../../hooks/AuthContext';
 import providerAvatar from '../../assets/provider-avatar.png';
-import providerImage from '../../assets/provider.jpg';
+
+interface IDays {
+  day: number;
+  available: boolean;
+  hasAppointment: boolean;
+}
 
 interface IDaysOfMonth {
-  number: number;
-  day: string;
+  day: number;
+  number: string;
+  name: string;
+  available: boolean;
+  hasAppointment: boolean;
 }
 
 interface Appointment {
   date: string;
+  user: IUser;
 }
 
+interface IUser {
+  avatar_url: string;
+}
 interface ListAppoitment {
   hour: number;
   hourStart: string;
@@ -96,25 +109,39 @@ const Dashboard: React.FC = () => {
   const [daySelected, setDaySelected] = useState(getDate(new Date()));
   const [monthSelected, setMonthSelected] = useState(getMonth(new Date()) + 1);
 
+  /**
+   * Get list of days in month with availability information and
+   * Add property name of the day of the week
+   */
   useEffect(() => {
-    const numberOfDaysInMonth = getDaysInMonth(new Date());
-    const days = Array.from(
-      { length: numberOfDaysInMonth },
-      (_, index) => index + 1,
-    );
+    api
+      .get(`/providers/${user.id}/month-available`, {
+        params: {
+          year: getYear(new Date()),
+          month: monthSelected,
+        },
+      })
+      .then(response => {
+        const daysFormatted = response.data.map(
+          ({ day, available, hasAppointment }: IDays) => {
+            return {
+              day,
+              number: String(day).padStart(2, '0'),
+              available,
+              hasAppointment,
+              name: format(
+                new Date(getYear(new Date()), monthSelected - 1, day),
+                'E',
+                { locale: pt },
+              ),
+            };
+          },
+        );
+        setDaysOfMonth(daysFormatted);
+      });
+  }, [monthSelected, user.id]);
 
-    const nameOfDays = days.map(day => {
-      const dateFormatted = setDate(dateSelected, day);
-      return {
-        number: day,
-        day: format(dateFormatted, 'E', { locale: pt }),
-      };
-    });
-
-    setDaysOfMonth(nameOfDays);
-  }, [dateSelected]);
-
-  function formatAppointment(myAppointments: []) {
+  function formatAppointment(myAppointments: Appointment[]) {
     const appointmentsFormmated = hoursOfDay.map(hour => {
       return {
         hour,
@@ -135,9 +162,9 @@ const Dashboard: React.FC = () => {
     api
       .get('/appointments/me', {
         params: {
-          day: 19,
-          month: 8,
-          year: 2020,
+          day: getDate(new Date()),
+          month: getMonth(new Date()) + 1,
+          year: getYear(new Date()),
         },
       })
       .then(response => {
@@ -183,6 +210,7 @@ const Dashboard: React.FC = () => {
     return busy.length;
   }, [appointments]);
 
+  console.log(daysOfMonth);
   return (
     <Container>
       <Content>
@@ -214,21 +242,25 @@ const Dashboard: React.FC = () => {
 
         <CalendarDay>
           <Carousel
-            initialFirstItem={daySelected}
+            initialFirstItem={daySelected - 2}
             itemsToScroll={7}
             itemPadding={[0, 0]}
             itemsToShow={12}
           >
-            {daysOfMonth.map(({ number, day }) => (
-              <Day
-                key={number}
-                selected={number === daySelected}
-                onClick={() => handleSelectAppoinmentDate({ day: number })}
-              >
-                <strong>{number}</strong>
-                <span>{day}</span>
-              </Day>
-            ))}
+            {daysOfMonth.map(
+              ({ number, day, name, available, hasAppointment }) => (
+                <Day
+                  key={number}
+                  selected={day === daySelected}
+                  onClick={() => handleSelectAppoinmentDate({ day })}
+                  available={available}
+                  hasAppointment={hasAppointment}
+                >
+                  <strong>{number}</strong>
+                  <span>{name}</span>
+                </Day>
+              ),
+            )}
           </Carousel>
         </CalendarDay>
 
@@ -264,7 +296,14 @@ const Dashboard: React.FC = () => {
 
                     <div className="right">
                       <ClienteAvatar>
-                        <img src={providerAvatar} alt="cliente" />
+                        <img
+                          src={`${
+                            appointment && appointment.user.avatar_url
+                              ? appointment.user.avatar_url
+                              : providerAvatar
+                          }`}
+                          alt="cliente"
+                        />
                       </ClienteAvatar>
 
                       <MdMoreHoriz size={28} color="#97989a" />
@@ -279,7 +318,7 @@ const Dashboard: React.FC = () => {
 
       <SiderBar>
         <Link to="/profile">
-          <img src={user.avatar_url || providerImage} alt="Provider" />
+          <img src={user.avatar_url || providerAvatar} alt="Provider" />
         </Link>
 
         <strong>{user.name}</strong>
