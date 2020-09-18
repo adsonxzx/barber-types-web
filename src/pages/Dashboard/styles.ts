@@ -20,6 +20,14 @@ interface IDay {
   hasAppointment: boolean;
 }
 
+interface ICalendarDay {
+  isLoading: boolean;
+}
+
+interface IAppointments {
+  isLoading: boolean;
+}
+
 export const Container = styled.main`
   max-width: 1200px;
   width: 100%;
@@ -117,10 +125,16 @@ export const Month = styled.div<IMonth>`
     `}
 `;
 
-export const CalendarDay = styled.div`
+export const CalendarDay = styled.div<ICalendarDay>`
   width: 100%;
   position: relative;
   margin-top: 25px;
+
+  ${({ isLoading }) =>
+    isLoading &&
+    css`
+      display: none;
+    `}
 
   &::after {
     content: '';
@@ -213,10 +227,16 @@ export const Day = styled.div<IDay>`
     `}
 `;
 
-export const Appointments = styled(motion.div)`
+export const Appointments = styled(motion.div)<IAppointments>`
   height: 570px;
   overflow: hidden;
   margin-bottom: 100px;
+
+  ${({ isLoading }) =>
+    isLoading &&
+    css`
+      display: none;
+    `}
 
   ul {
     width: 100%;

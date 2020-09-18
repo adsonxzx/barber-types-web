@@ -4,10 +4,9 @@ import React, {
   useRef,
   useMemo,
   useCallback,
+  MouseEvent,
 } from 'react';
 import {
-  getDaysInMonth,
-  setDate,
   format,
   getHours,
   getDate,
@@ -37,10 +36,12 @@ import {
   ClienteAvatar,
   Appointment,
 } from './styles';
-
+import ModalCreateAppointment from '../../components/ModalCreateAppointment';
 import api from '../../services/api';
 import { useAuth } from '../../hooks/AuthContext';
 import providerAvatar from '../../assets/provider-avatar.png';
+import LoadingDays from '../../components/Loadings/LoadDays';
+import LoadAppointmets from '../../components/Loadings/LoadAppointmets';
 
 interface IDays {
   day: number;
@@ -99,21 +100,48 @@ const Dashboard: React.FC = () => {
   const [dateSelected, setDateSelected] = useState(new Date());
   const [currentDate, setCurrentDate] = useState(new Date());
   const [daysOfMonth, setDaysOfMonth] = useState<IDaysOfMonth[]>([]);
+  const [loadDaysOfMonth, setLoadDaysOfMonth] = useState(false);
 
   const [hoursOfDay, setHoursOfDay] = useState(() =>
     Array.from({ length: 10 }, (_, index) => index + 8),
   );
 
   const [appointments, setAppointments] = useState<ListAppoitment[]>([]);
+  const [loadAppointments, setLoadAppointments] = useState(false);
 
   const [daySelected, setDaySelected] = useState(getDate(new Date()));
   const [monthSelected, setMonthSelected] = useState(getMonth(new Date()) + 1);
+
+  /**
+   * ModalCreateAppointment
+   */
+  const [openModalCreateAppointment, setOpenModalCreateAppointment] = useState(
+    false,
+  );
+
+  const handleOpenModal = useCallback(() => {
+    const body = document.querySelector('body');
+    body?.classList.add('modal-open');
+    setOpenModalCreateAppointment(true);
+  }, []);
+
+  const handleCloseModal = useCallback((event: MouseEvent<HTMLElement>) => {
+    const target = event.target as HTMLElement;
+    const close = target.getAttribute('id');
+
+    if (close) {
+      setOpenModalCreateAppointment(false);
+      const body = document.querySelector('body');
+      body?.classList.remove('modal-open');
+    }
+  }, []);
 
   /**
    * Get list of days in month with availability information and
    * Add property name of the day of the week
    */
   useEffect(() => {
+    setLoadDaysOfMonth(true);
     api
       .get(`/providers/${user.id}/month-available`, {
         params: {
@@ -138,6 +166,7 @@ const Dashboard: React.FC = () => {
           },
         );
         setDaysOfMonth(daysFormatted);
+        setLoadDaysOfMonth(false);
       });
   }, [monthSelected, user.id]);
 
@@ -159,6 +188,8 @@ const Dashboard: React.FC = () => {
   }
 
   useEffect(() => {
+    setLoadAppointments(true);
+
     api
       .get('/appointments/me', {
         params: {
@@ -169,6 +200,7 @@ const Dashboard: React.FC = () => {
       })
       .then(response => {
         formatAppointment(response.data);
+        setLoadAppointments(false);
       });
   }, []);
 
@@ -191,6 +223,7 @@ const Dashboard: React.FC = () => {
     }
 
     try {
+      setLoadAppointments(true);
       const response = await api.get('/appointments/me', {
         params: {
           day: day || daySelected,
@@ -200,6 +233,7 @@ const Dashboard: React.FC = () => {
       });
 
       formatAppointment(response.data);
+      setLoadAppointments(false);
     } catch (error) {
       toast.error('Erro ao carregar agendamentos!');
     }
@@ -210,7 +244,6 @@ const Dashboard: React.FC = () => {
     return busy.length;
   }, [appointments]);
 
-  console.log(daysOfMonth);
   return (
     <Container>
       <Content>
@@ -220,7 +253,9 @@ const Dashboard: React.FC = () => {
             <p>{dateSeletedText}</p>
           </div>
 
-          <button type="button">+ Criar</button>
+          <button type="button" onClick={handleOpenModal}>
+            + Agendar
+          </button>
         </ContentHeader>
 
         <CalendarMonth
@@ -240,7 +275,9 @@ const Dashboard: React.FC = () => {
           ))}
         </CalendarMonth>
 
-        <CalendarDay>
+        {loadDaysOfMonth && <LoadingDays />}
+
+        <CalendarDay isLoading={loadDaysOfMonth}>
           <Carousel
             initialFirstItem={daySelected - 2}
             itemsToScroll={7}
@@ -264,7 +301,9 @@ const Dashboard: React.FC = () => {
           </Carousel>
         </CalendarDay>
 
-        <Appointments ref={constraintsRef}>
+        {loadAppointments && <LoadAppointmets />}
+
+        <Appointments ref={constraintsRef} isLoading={loadAppointments}>
           <motion.ul drag dragConstraints={constraintsRef}>
             {appointments.map(
               ({
@@ -346,6 +385,10 @@ const Dashboard: React.FC = () => {
           </ul>
         </div>
       </SiderBar>
+      <ModalCreateAppointment
+        onClick={event => handleCloseModal(event)}
+        open={openModalCreateAppointment}
+      />
     </Container>
   );
 };

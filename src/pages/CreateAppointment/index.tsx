@@ -182,6 +182,7 @@ const CreateAppointment: React.FC = () => {
         <SelectDate>
           <h3>Escolha a Data</h3>
           <DayPicker
+            selectedDays={dateSelected}
             weekdaysShort={['D', 'S', 'T', 'Q', 'Q', 'S', 'S']}
             disabledDays={[
               ...daysUnavailable,

@@ -64,7 +64,9 @@ const ForgotPassword: React.FC = () => {
                 placeholder="******"
               />
 
-              <Button type="submit">Enviar</Button>
+              <Button width={340} type="submit">
+                Enviar
+              </Button>
             </Form>
           )}
         </Formik>

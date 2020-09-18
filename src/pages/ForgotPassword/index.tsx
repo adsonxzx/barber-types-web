@@ -61,7 +61,7 @@ const ForgotPassword: React.FC = () => {
                 placeholder="exemple@gmail.com"
               />
 
-              <Button loading={loading} type="submit">
+              <Button width={340} loading={loading} type="submit">
                 Enviar
               </Button>
             </Form>

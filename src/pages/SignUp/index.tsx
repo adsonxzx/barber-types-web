@@ -79,7 +79,9 @@ const SignUp: React.FC = () => {
                 placeholder="*******"
               />
 
-              <Button type="submit">Cadastrar</Button>
+              <Button width={340} type="submit">
+                Cadastrar
+              </Button>
             </Form>
           )}
         </Formik>

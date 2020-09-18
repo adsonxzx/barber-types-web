@@ -157,7 +157,9 @@ const Profile: React.FC = () => {
                 placeholder="*******"
               />
 
-              <Button type="submit">Confirmar Mudanças</Button>
+              <Button width={340} type="submit">
+                Confirmar Mudanças
+              </Button>
             </Form>
           )}
         </Formik>

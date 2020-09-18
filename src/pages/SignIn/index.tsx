@@ -75,7 +75,7 @@ const SignIn: React.FC = () => {
                 placeholder="******"
               />
 
-              <Button loading={loading} type="submit">
+              <Button width={340} loading={loading} type="submit">
                 Entrar
               </Button>
               <Link to="/passwords/forgot">Esqueci minha senha</Link>

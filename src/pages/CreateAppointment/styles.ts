@@ -95,31 +95,59 @@ export const SelectDate = styled.div`
 
   /* Daypicker */
   .DayPicker {
-    width: 100%;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-    background: #fff;
     border-radius: 10px;
   }
 
-  .DayPicker-NavBar {
-    span:first-child {
-      left: 1.5em;
-    }
+  .DayPicker-wrapper {
+    padding-bottom: 0;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    border-radius: 10px;
+    background: #fff;
   }
 
-  .DayPicker-Caption {
-    text-align: center;
-    margin-bottom: 20px !important;
+  .DayPicker,
+  .DayPicker-Month {
+    width: 100%;
+  }
+
+  .DayPicker-NavButton {
+    color: #999591 !important;
+  }
+
+  .DayPicker-NavButton--prev {
+    right: auto;
+    left: 1.5em;
+    margin-right: 0;
   }
 
   .DayPicker-Month {
-    width: 100%;
-    margin: 0;
-    margin-top: 14px;
+    border-collapse: separate;
+    border-spacing: 8px;
+    margin: 16px 0 0 0;
+    padding: 16px 16px 0 16px;
+    border-radius: 0 0 10px 10px;
   }
 
-  .DayPicker-Day[selected='false'] {
-    background-color: #ff9000 !important;
+  .DayPicker-Caption {
+    margin-bottom: 1em;
+    padding: 0 1em;
+
+    > div {
+      text-align: center;
+    }
+  }
+
+  .DayPicker-Day {
+    width: 40px;
+    height: 40px;
+  }
+
+  .DayPicker-Day--today {
+    font-weight: normal;
+  }
+
+  .DayPicker-Day--selected {
+    background: #ff9000 !important;
     border-radius: 10px;
     color: #232129 !important;
   }
