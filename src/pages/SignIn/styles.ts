@@ -11,20 +11,28 @@ export const Container = styled.div`
   margin: 0 auto;
   height: 100vh;
   background: #232129;
+
+  @media (max-width: 375px) {
+    justify-content: center;
+  }
 `;
 
 export const Content = styled.div`
+  max-width: 440px;
+  width: 100%;
   text-align: center;
   align-self: center;
   position: absolute;
-  left: calc(50% - 205px);
+  left: calc(50% - 250px);
   background: #fff;
   border-radius: 7px;
   box-shadow: 1px 1px 8px rgba(1, 1, 0, 0.7);
   padding: 35px;
+  margin: 0 15px;
 
   form {
-    width: 340px;
+    max-width: 340px;
+    width: 100%;
     margin: 0 auto;
     h3 {
       font-size: 24px;
@@ -69,6 +77,12 @@ export const Content = styled.div`
       text-decoration: underline;
     }
   }
+
+  @media (max-width: 375px) {
+    padding: 18px;
+    position: relative;
+    left: 0;
+  }
 `;
 
 export const Background = styled.div`
@@ -76,4 +90,8 @@ export const Background = styled.div`
   background: url(${BackgroundImage}) no-repeat center;
   background-size: cover;
   height: 100%;
+
+  @media (max-width: 375px) {
+    display: none;
+  }
 `;

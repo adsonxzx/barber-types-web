@@ -10,7 +10,8 @@ interface IProps {
 
 export const Container = styled.button<IProps>`
   display: block;
-  width: ${props => `${props.width}px`};
+  max-width: ${props => `${props.width}px`};
+  width: 100%;
   height: ${props => `${props.height}px`};
   background: ${props => `${props.color}`};
   color: #fff;
