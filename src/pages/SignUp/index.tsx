@@ -79,7 +79,7 @@ const SignUp: React.FC = () => {
                 placeholder="*******"
               />
 
-              <Button width={340} type="submit">
+              <Button width={340} type="submit" loading={false}>
                 Cadastrar
               </Button>
             </Form>

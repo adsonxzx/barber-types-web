@@ -4,7 +4,7 @@ import { Container } from './styles';
 import loadingButton from '../../assets/loading.svg';
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
-  loading?: boolean;
+  loading: boolean;
   disable?: boolean;
   width: number;
   height?: number;

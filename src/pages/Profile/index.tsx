@@ -157,7 +157,7 @@ const Profile: React.FC = () => {
                 placeholder="*******"
               />
 
-              <Button width={340} type="submit">
+              <Button width={340} type="submit" loading={false}>
                 Confirmar Mudanças
               </Button>
             </Form>

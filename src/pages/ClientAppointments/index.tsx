@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import Avatar from '../../components/Avatar';
 import { Container, Header, Content, EmptyContent } from './styles';
 import { useAuth } from '../../hooks/AuthContext';
-import Footer from '../../components/Footer';
 import calendar from '../../assets/calendar.png';
 
 const SelectProvider: React.FC = () => {
@@ -37,7 +36,6 @@ const SelectProvider: React.FC = () => {
           </EmptyContent>
         )}
       </Content>
-      <Footer />
     </Container>
   );
 };

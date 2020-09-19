@@ -21,7 +21,7 @@ const Routes: React.FC = () => (
     <Route path="/passwords/reset" component={ResetPassword} />
     <Route path="/profile" isPrivate component={Profile} />
 
-    <Route path="/p/dashboard" component={Dashboard} isPrivate />
+    <Route path="/p/dashboard" component={Dashboard} isPrivate isProvider />
 
     <Route
       exact

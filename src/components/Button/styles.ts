@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 
 interface IProps {
   disable?: boolean;
-  loading?: boolean;
+  loading: boolean;
   width: number;
   height: number;
   color: string;

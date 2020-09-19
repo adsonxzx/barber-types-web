@@ -24,6 +24,7 @@ interface IUser {
   email: string;
   avatar: string;
   avatar_url: string;
+  provider: boolean;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
