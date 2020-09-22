@@ -7,6 +7,7 @@ export const Container = styled.header`
   margin-bottom: 20px;
 
   > div {
+    padding: 0 15px;
     max-width: 1200px;
     width: 100%;
     margin: 0 auto;
@@ -45,6 +46,12 @@ export const Container = styled.header`
       justify-content: flex-end;
       svg {
         cursor: pointer;
+      }
+    }
+
+    @media (max-width: 375px) {
+      a:nth-child(2) {
+        display: none;
       }
     }
   }

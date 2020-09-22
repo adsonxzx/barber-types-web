@@ -2,9 +2,12 @@ import styled from 'styled-components';
 import { colorBlack, colorOrange } from '../../styles/colors';
 
 export const Container = styled.main`
+  padding: 0 15px;
   max-width: 1200px;
   width: 100%;
-  margin: 45px auto 45px auto;
+  margin: 45px auto 90px auto;
+  display: flex;
+  justify-content: center;
 `;
 
 export const Content = styled.div`
@@ -12,8 +15,8 @@ export const Content = styled.div`
   border-radius: 7px;
   box-shadow: 0px 0px 3px rgba(1, 1, 0, 0.3);
   padding: 30px;
-  width: 600px;
-  margin: 0 auto;
+  max-width: 600px;
+  width: 100%;
 
   form {
     width: 100%;
@@ -34,6 +37,10 @@ export const Content = styled.div`
     button {
       margin: 40px auto 0 auto;
     }
+  }
+
+  @media (max-width: 375px) {
+    padding: 30px 15px;
   }
 `;
 
@@ -60,5 +67,11 @@ export const AvatarInput = styled.label`
 
   input {
     display: none;
+  }
+
+  @media (max-width: 375px) {
+    span {
+      right: 70px;
+    }
   }
 `;
