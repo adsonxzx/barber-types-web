@@ -10,6 +10,7 @@ import api from '../../services/api';
 import { useAuth } from '../../hooks/AuthContext';
 import Footer from '../../components/Footer';
 import history from '../../utils/history';
+import LoadProviders from '../../components/Loadings/LoadProviders';
 
 interface IProvider {
   id: string;
@@ -20,12 +21,18 @@ interface IProvider {
 const SelectProvider: React.FC = () => {
   const [providers, setProviders] = useState<IProvider[]>([]);
   const { user } = useAuth();
+  const [loadProviders, setLoadProviders] = useState(false);
 
   useEffect(() => {
     try {
-      api.get('/providers').then(response => setProviders(response.data));
+      setLoadProviders(true);
+      api.get('/providers').then(response => {
+        setProviders(response.data);
+        setLoadProviders(false);
+      });
     } catch (error) {
       toast.error('Error ao ler prestadores de serviço');
+      setLoadProviders(false);
     }
   }, []);
 
@@ -44,24 +51,31 @@ const SelectProvider: React.FC = () => {
       </Header>
       <Content>
         <h1>Barbeiros</h1>
-        {providers.map(provider => (
-          <Link to={`/c/appointments/create/${provider.id}`} key={provider.id}>
-            <BoxProvider>
-              <Avatar size={55} img={provider.avatar_url} />
-              <div className="info">
-                <h3>{provider.name}</h3>
-                <span>
-                  <MdEvent size={16} color="#FF9000" />
-                  Segunda à sexta
-                </span>
-                <span>
-                  <MdSchedule size={16} color="#FF9000" />
-                  8h às 18h
-                </span>
-              </div>
-            </BoxProvider>
-          </Link>
-        ))}
+
+        {loadProviders && <LoadProviders />}
+
+        {!loadProviders &&
+          providers.map(provider => (
+            <Link
+              to={`/c/appointments/create/${provider.id}`}
+              key={provider.id}
+            >
+              <BoxProvider>
+                <Avatar size={55} img={provider.avatar_url} />
+                <div className="info">
+                  <h3>{provider.name}</h3>
+                  <span>
+                    <MdEvent size={16} color="#FF9000" />
+                    Segunda à sexta
+                  </span>
+                  <span>
+                    <MdSchedule size={16} color="#FF9000" />
+                    8h às 18h
+                  </span>
+                </div>
+              </BoxProvider>
+            </Link>
+          ))}
       </Content>
       <Footer />
     </Container>

@@ -76,3 +76,56 @@ export const EmptyContent = styled.div`
     color: ${colorOrange};
   }
 `;
+
+export const MyAppointments = styled.ul`
+  display: flex;
+  flex-direction: column;
+
+  li {
+    display: flex;
+    align-items: center;
+    height: 70px;
+    margin-bottom: 20px;
+    position: relative;
+
+    > div {
+      flex: 1;
+      position: relative;
+      background: #fff;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 7px;
+      padding: 10px 15px;
+      box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+
+      .left {
+        height: 100%;
+        display: flex;
+
+        > span {
+          border-radius: 4px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100%;
+          width: 40px;
+          margin-right: 15px;
+          border: 2px solid #feffff;
+        }
+
+        strong {
+          font-size: 15px;
+          margin-bottom: 2px;
+          display: block;
+        }
+
+        p {
+          font-size: 13px;
+          color: #97989a;
+        }
+      }
+    }
+  }
+`;
