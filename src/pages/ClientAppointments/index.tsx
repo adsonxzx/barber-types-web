@@ -14,6 +14,7 @@ import {
 import { useAuth } from '../../hooks/AuthContext';
 import calendar from '../../assets/calendar.png';
 import api from '../../services/api';
+import LoadClientAppointments from '../../components/Loadings/LoadClientAppointments';
 
 interface IAppointment {
   id: string;
@@ -26,8 +27,10 @@ const SelectProvider: React.FC = () => {
   const { user } = useAuth();
 
   const [myAppointments, setMyAppointments] = useState([]);
+  const [loadMyAppointments, setLoadMyAppointments] = useState(false);
 
   useEffect(() => {
+    setLoadMyAppointments(true);
     api.get('/appointments/client').then(response => {
       const appointmentsFormatted = response.data.map(
         (appointment: IAppointment) => {
@@ -45,10 +48,10 @@ const SelectProvider: React.FC = () => {
       );
 
       setMyAppointments(appointmentsFormatted);
+      setLoadMyAppointments(false);
     });
   }, []);
 
-  console.log(myAppointments);
   return (
     <Container>
       <Header>
@@ -63,6 +66,8 @@ const SelectProvider: React.FC = () => {
       </Header>
       <Content>
         <h1>Meus Agendamentos</h1>
+
+        {loadMyAppointments && <LoadClientAppointments />}
 
         {!myAppointments.length && (
           <EmptyContent>
