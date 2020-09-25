@@ -88,11 +88,13 @@ const Profile: React.FC = () => {
 
           const response = await api.patch('/users/avatar', formData);
 
-          setAvatar(`http://localhost:3333/files/${response.data.avatar}`);
+          setAvatar(
+            `${process.env.REACT_APP_API_URL}/files/${response.data.avatar}`,
+          );
 
           updateUser({
             ...user,
-            avatar: `http://localhost:3333/files/${response.data.avatar}`,
+            avatar: `${process.env.REACT_APP_API_URL}/files/${response.data.avatar}`,
           });
 
           toast.success('Atualizado');
