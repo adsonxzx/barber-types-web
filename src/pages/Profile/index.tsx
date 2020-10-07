@@ -65,15 +65,13 @@ const Profile: React.FC = () => {
         userProfile = { ...userProfile, password, old_password };
       }
 
-      history.push('/p/dashboard');
       const response = await api.put('/profiles', userProfile);
+      history.push(user.provider ? '/p/dashboard' : '/c/appointments');
       updateUser(response.data);
 
       toast.success('Dados atualizado com sucesso!');
     } catch (err) {
-      const error = err.response.data.message;
-
-      toast.error(error);
+      toast.error('Erro ao atualizar dados');
     }
   }
 
