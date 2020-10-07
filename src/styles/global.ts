@@ -51,4 +51,21 @@ export default createGlobalStyle`
   a {
     text-decoration: none;
   }
+
+  .Toastify {
+    .Toastify__toast {
+      border-radius: 4px;
+    }
+  }
+
+  @media (max-width: 414px) {
+    .Toastify {
+      .Toastify__toast-container {
+        width: 320px;
+        top: 10px;
+        transform: translate(-50%, 0);
+        left: 50%;
+      }
+    }
+  }
 `;

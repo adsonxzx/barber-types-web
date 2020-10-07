@@ -12,7 +12,7 @@ export const Container = styled.div`
   height: 100vh;
   background: #232129;
 
-  @media (max-width: 375px) {
+  @media (max-width: 414px) {
     justify-content: center;
   }
 `;
@@ -80,7 +80,7 @@ export const Content = styled.div`
     }
   }
 
-  @media (max-width: 375px) {
+  @media (max-width: 414px) {
     padding: 18px;
     position: relative;
     left: 0;
@@ -93,7 +93,7 @@ export const Background = styled.div`
   width: 50%;
   height: 100%;
 
-  @media (max-width: 375px) {
+  @media (max-width: 414px) {
     display: none;
   }
 `;

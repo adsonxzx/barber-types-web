@@ -69,7 +69,7 @@ export const AvatarInput = styled.label`
     display: none;
   }
 
-  @media (max-width: 375px) {
+  @media (max-width: 414px) {
     span {
       right: 70px;
     }
