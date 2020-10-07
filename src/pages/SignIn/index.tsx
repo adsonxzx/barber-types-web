@@ -8,7 +8,6 @@ import { Link } from 'react-router-dom';
 import { Container, Content, Background } from './styles';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
-import api from '../../services/api';
 import { useAuth } from '../../hooks/AuthContext';
 
 interface Values {

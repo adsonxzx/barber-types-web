@@ -13,7 +13,7 @@ export const Container = styled.div`
   background: #232129;
 
   @media (max-width: 414px) {
-    justify-content: center;
+    /* justify-content: center; */
   }
 `;
 

@@ -69,7 +69,7 @@ const SelectProvider: React.FC = () => {
 
         {loadMyAppointments && <LoadClientAppointments />}
 
-        {!myAppointments.length && (
+        {!myAppointments.length && !loadMyAppointments && (
           <EmptyContent>
             <div>
               <img src={calendar} alt="" />

@@ -49,7 +49,7 @@ export const Container = styled.header`
       }
     }
 
-    @media (max-width: 375px) {
+    @media (max-width: 414px) {
       a:nth-child(2) {
         display: none;
       }
