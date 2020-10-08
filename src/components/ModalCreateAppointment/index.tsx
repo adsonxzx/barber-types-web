@@ -31,6 +31,7 @@ interface IClient {
 interface IMonthAvailable {
   day: number;
   available: boolean;
+  isPast: boolean;
 }
 
 interface IHourAvailable {
@@ -80,7 +81,8 @@ const ModalCreateAppointment: React.FC<IProps> = ({ open, onClick }) => {
       })
       .then(response => {
         const getDaysUnavailable = response.data.filter(
-          (month: IMonthAvailable) => month.available === false,
+          (month: IMonthAvailable) =>
+            month.available === false || month.isPast === true,
         );
 
         const daysUnavailableFormatted = getDaysUnavailable.map(
@@ -161,6 +163,12 @@ const ModalCreateAppointment: React.FC<IProps> = ({ open, onClick }) => {
     }
   }, [dateSelected, hourSelected, user.id, client?.id]);
 
+  const handleDateChange = useCallback((day: Date, modifiers: DayModifiers) => {
+    if (modifiers.available) {
+      setDateSelected(day);
+    }
+  }, []);
+
   return (
     <Container open={open} id="container" onClick={onClick}>
       <Content>
@@ -206,7 +214,7 @@ const ModalCreateAppointment: React.FC<IProps> = ({ open, onClick }) => {
             selectedDays={dateSelected}
             weekdaysShort={['D', 'S', 'T', 'Q', 'Q', 'S', 'S']}
             fromMonth={new Date()}
-            onDayClick={day => setDateSelected(day)}
+            onDayClick={handleDateChange}
             onMonthChange={date => setCurrentMonth(date)}
             disabledDays={[
               ...daysUnavailable,
@@ -214,6 +222,9 @@ const ModalCreateAppointment: React.FC<IProps> = ({ open, onClick }) => {
                 daysOfWeek: [0, 6],
               },
             ]}
+            modifiers={{
+              available: { daysOfWeek: [1, 2, 3, 4, 5] },
+            }}
           />
         </SelectDate>
 

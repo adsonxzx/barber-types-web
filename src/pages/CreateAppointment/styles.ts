@@ -140,6 +140,10 @@ export const SelectDate = styled.div`
   .DayPicker-Day {
     width: 40px;
     height: 40px;
+
+    &[aria-disabled='true'] {
+      pointer-events: none;
+    }
   }
 
   .DayPicker-Day--today {

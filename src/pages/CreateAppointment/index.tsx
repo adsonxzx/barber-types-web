@@ -47,6 +47,7 @@ interface ITimeDayAvailable {
 interface IMonthAvailable {
   day: number;
   available: boolean;
+  isPast: boolean;
 }
 
 interface IHourAvailable {
@@ -95,7 +96,9 @@ const CreateAppointment: React.FC = () => {
   }, [dateSelected, providerSelected]);
 
   const handleDateChange = useCallback((day: Date, modifiers: DayModifiers) => {
-    setDateSelected(day);
+    if (modifiers.available) {
+      setDateSelected(day);
+    }
   }, []);
 
   const dateFormatted = useMemo(
@@ -130,7 +133,8 @@ const CreateAppointment: React.FC = () => {
       })
       .then(response => {
         const getDaysUnavailable = response.data.filter(
-          (month: IMonthAvailable) => month.available === false,
+          (month: IMonthAvailable) =>
+            month.available === false || month.isPast === true,
         );
 
         const daysUnavailableFormatted = getDaysUnavailable.map(
@@ -190,6 +194,9 @@ const CreateAppointment: React.FC = () => {
                 daysOfWeek: [0, 6],
               },
             ]}
+            modifiers={{
+              available: { daysOfWeek: [1, 2, 3, 4, 5] },
+            }}
             fromMonth={new Date()}
             onDayClick={handleDateChange}
             onMonthChange={handleMonthChange}
