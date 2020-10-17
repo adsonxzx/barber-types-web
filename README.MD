@@ -49,7 +49,7 @@ Na versão para o cliente, é possível a criação do agendamento, listagem dos
 <img src="/readme-images/4-cliente.jpeg" alt="barber type" >
 <img src="/readme-images/5-cliente.jpeg" alt="barber type" >
 <img src="/readme-images/6-cliente.jpeg" alt="barber type" >
-<img src="/readme-images/7-cliente.jpeg" alt="barber type" >
+
 
 
 
